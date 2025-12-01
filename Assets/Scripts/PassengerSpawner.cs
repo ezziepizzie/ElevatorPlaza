@@ -43,7 +43,7 @@ public class PassengerSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       InvokeRepeating("SpawnPassenger", 1f, 5f);
+       InvokeRepeating("SpawnPassenger", 1f, 1.5f);
     }
 
     // Update is called once per frame
