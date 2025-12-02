@@ -9,6 +9,8 @@ public class PassengerSpawner : MonoBehaviour
     public Transform gridParent;
     public int maxSlots = 5; 
     private List<GameObject> activePassengers = new List<GameObject>();
+    public PassengerType[] passengerTypes;
+
 
     public void SpawnPassenger()
     {
@@ -16,12 +18,17 @@ public class PassengerSpawner : MonoBehaviour
 
         GameObject newPassenger = Instantiate(passengerPrefab, gridParent);
 
+        Passenger passengerComponent = newPassenger.GetComponent<Passenger>();
+        passengerComponent.passengerType = passengerTypes[Random.Range(0, passengerTypes.Length)];
+        passengerComponent.spawner = this;
+
         // Get the Image component and set a random color
-        Image img = newPassenger.GetComponent<Image>();
+        /*Image img = newPassenger.GetComponent<Image>();
+
         if (img != null)
         {
             img.color = new Color(Random.value, Random.value, Random.value);
-        }
+        }*/
 
         activePassengers.Add(newPassenger);
     }

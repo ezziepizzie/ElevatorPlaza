@@ -8,7 +8,6 @@ public class Elevator : MonoBehaviour, IDropHandler
     public int MaxCapacity = 4;
     [HideInInspector] public int CurrentCapacity;
     [SerializeField] private TextMeshProUGUI capacityText;
-    [SerializeField]
 
     public void OnDrop(PointerEventData eventData)
     {
