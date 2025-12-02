@@ -19,15 +19,15 @@ public class Passenger : MonoBehaviour
         passengerImage.sprite = passengerType.passengerSprite;
         currentPatienceLevel = passengerType.patienceLevel;
         targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
-        floorText.text = targetFloor.ToString();
-        patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString();
+        floorText.text = targetFloor.ToString() + "F";
+        patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString() + "s";
     }
 
     // Update is called once per frame
     void Update()
     {
         currentPatienceLevel -= Time.deltaTime;
-        patienceText.text = Mathf.CeilToInt(Mathf.Max(currentPatienceLevel, 0)).ToString(); 
+        patienceText.text = Mathf.CeilToInt(Mathf.Max(currentPatienceLevel, 0)).ToString() + "s"; 
 
         if (currentPatienceLevel <= 0)
         {
