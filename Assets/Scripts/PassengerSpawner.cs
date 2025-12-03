@@ -10,6 +10,8 @@ public class PassengerSpawner : MonoBehaviour
     public int maxSlots = 5; 
     private List<GameObject> activePassengers = new List<GameObject>();
     public PassengerType[] passengerTypes;
+    public float spawnRateMultiplier = 1f;
+
 
 
     public void SpawnPassenger()
@@ -51,8 +53,25 @@ public class PassengerSpawner : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-       InvokeRepeating("SpawnPassenger", 1f, 1.5f);
+        InvokeRepeating("SpawnPassenger", 1f, 1.5f / spawnRateMultiplier);
     }
+
+    public void SetRushHour(bool active)
+    {
+        CancelInvoke("SpawnPassenger");
+
+        if (active)
+        {
+            spawnRateMultiplier = 2f;  // double spawn speed during rush hour
+        }
+        else
+        {
+            spawnRateMultiplier = 1f;  // normal spawn
+        }
+
+        InvokeRepeating("SpawnPassenger", 1f, 1.5f / spawnRateMultiplier);
+    }
+
 
     // Update is called once per frame
     void Update()
