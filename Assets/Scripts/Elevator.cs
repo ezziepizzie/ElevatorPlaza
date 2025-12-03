@@ -1,33 +1,51 @@
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems; 
-using TMPro;
 
 public class Elevator : MonoBehaviour, IDropHandler
 {
     public PassengerSpawner spawner;
     public int MaxCapacity = 4;
-    [HideInInspector] public int CurrentCapacity;
+    [HideInInspector] public int currentCapacity;
+    [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
+    [HideInInspector] public List<int> floorsList = new List<int>();
     [SerializeField] private TextMeshProUGUI capacityText;
 
     public void OnDrop(PointerEventData eventData)
     {
         GameObject dropped = eventData.pointerDrag;
+        Passenger passenger = dropped.GetComponent<Passenger>();
         Draggable draggable = dropped.GetComponent<Draggable>();
 
-        if(CurrentCapacity < MaxCapacity)
+        if (passenger == null) return;
+
+        if (currentCapacity + passenger.passengerType.passengerAmount > MaxCapacity)
         {
-            CurrentCapacity++;
-            draggable.transform.SetParent(null);
-            spawner.RemovePassenger(dropped);
-            capacityText.text = CurrentCapacity + " / " + MaxCapacity;
-            Debug.Log("Current capacity: " + CurrentCapacity);
+            return;
         }
+
+        draggable.transform.SetParent(null);
+
+        passengerList.Add(passenger);
+        floorsList.Add((int)passenger.targetFloor);
+        floorsList.Sort();
+        Debug.Log("Floors in elevator: " + string.Join(", ", floorsList));
+        spawner.RemovePassenger(dropped);
+
+        currentCapacity += passenger.passengerType.passengerAmount;
+
+        capacityText.text = currentCapacity + " / " + MaxCapacity;
+        //Debug.Log("Current capacity: " + currentCapacity);
     }
 
     public void ResetElevator()
     {
-        CurrentCapacity = 0;
+        currentCapacity = 0;
         capacityText.text = "0 / " + MaxCapacity;
+        passengerList.Clear();
+        floorsList.Clear();
+        //Destroy(passenger);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created

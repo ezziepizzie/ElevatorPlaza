@@ -6,6 +6,7 @@ public class PassengerType : ScriptableObject
 {
     public string passengerType;
     public Sprite passengerSprite;
+    public int passengerAmount;
     public float patienceLevel;
 
     public int minFloor;

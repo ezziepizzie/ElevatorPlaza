@@ -9,7 +9,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnBeginDrag(PointerEventData eventData)
     {
-        Debug.Log("Drag started");
+        //Debug.Log("Drag started");
         parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);
         transform.SetAsLastSibling();
@@ -24,7 +24,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 
     public void OnEndDrag(PointerEventData eventData)
     {
-        Debug.Log("Drag ended");
+        //Debug.Log("Drag ended");
         transform.SetParent(parentAfterDrag);
         image.raycastTarget = true;
     }
