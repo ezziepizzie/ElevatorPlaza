@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 509e1f727356a244dba01a2d01a555a4, type: 3}
-  m_Name: BasicWorker
+  m_Name: BusinessMan
   m_EditorClassIdentifier: Assembly-CSharp::PassengerType
-  passengerType: Basic Worker
-  passengerSprite: {fileID: -2848482501824323179, guid: 6681d6f171fb0b94cb3bb94b7aade39a, type: 3}
+  passengerType: Business Man
+  passengerSprite: {fileID: -7069642047187138349, guid: 778a032327188b840b745a5a158fa7ed, type: 3}
   passengerAmount: 1
-  patienceLevel: 60
+  patienceLevel: 45
   minFloor: 1
   maxFloor: 10

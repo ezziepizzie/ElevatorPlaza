@@ -71,7 +71,8 @@ public class PassengerSpawner : MonoBehaviour
         if (activePassengers.Contains(passenger))
         {
             activePassengers.Remove(passenger);
-            Destroy(passenger);
+            passenger.SetActive(false);
+            //Destroy(passenger);
 
             // reorder UI
             for (int i = 0; i < activePassengers.Count; i++)

@@ -8,7 +8,7 @@ public class Passenger : MonoBehaviour
     public PassengerType passengerType;
     public Image passengerImage;
     public float currentPatienceLevel;
-    public float targetFloor;
+    public int targetFloor;
 
     public TextMeshProUGUI floorText;
     public TextMeshProUGUI patienceText;
