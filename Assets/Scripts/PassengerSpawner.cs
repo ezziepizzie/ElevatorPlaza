@@ -1,18 +1,55 @@
+using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.UI;   
 
 public class PassengerSpawner : MonoBehaviour
 {
     public GameObject passengerPrefab;
     public Transform gridParent;
-    public int maxSlots = 5; 
+    public int maxSlots = 5;
     private List<GameObject> activePassengers = new List<GameObject>();
+
     public PassengerType[] passengerTypes;
+
+    [Header("Spawn Rate Settings")]
+    public float minSpawnTime = 3f;
+    public float maxSpawnTime = 9f;
+
     public float spawnRateMultiplier = 1f;
 
+    private Coroutine spawnRoutine;
 
+    void Start()
+    {
+        StartSpawning();
+    }
+
+    // call this to START the random spawning
+    public void StartSpawning()
+    {
+        if (spawnRoutine != null) StopCoroutine(spawnRoutine);
+        spawnRoutine = StartCoroutine(SpawnLoop());
+    }
+
+    // call this to STOP the random spawning
+    public void StopSpawning() 
+    {
+        if (spawnRoutine != null) StopCoroutine(spawnRoutine);
+        spawnRoutine = null;
+    }
+
+    private IEnumerator SpawnLoop()
+    {
+        while (true)
+        {
+            float delay = Random.Range(minSpawnTime, maxSpawnTime);
+            delay /= spawnRateMultiplier; // faster during Rush Hour
+
+            yield return new WaitForSeconds(delay);
+
+            SpawnPassenger();
+        }
+    }
 
     public void SpawnPassenger()
     {
@@ -20,62 +57,34 @@ public class PassengerSpawner : MonoBehaviour
 
         GameObject newPassenger = Instantiate(passengerPrefab, gridParent);
 
-        Passenger passengerComponent = newPassenger.GetComponent<Passenger>();
-        passengerComponent.passengerType = passengerTypes[Random.Range(0, passengerTypes.Length)];
-        passengerComponent.spawner = this;
+        Passenger passenger = newPassenger.GetComponent<Passenger>();
+        passenger.passengerType = passengerTypes[Random.Range(0, passengerTypes.Length)];
+        passenger.spawner = this;
 
-        // Get the Image component and set a random color
-        /*Image img = newPassenger.GetComponent<Image>();
-
-        if (img != null)
-        {
-            img.color = new Color(Random.value, Random.value, Random.value);
-        }*/
 
         activePassengers.Add(newPassenger);
+        Debug.Log("[SPAWNER] " + passenger.passengerType.name + " Spawned");
     }
+
     public void RemovePassenger(GameObject passenger)
     {
         if (activePassengers.Contains(passenger))
         {
             activePassengers.Remove(passenger);
-            passenger.SetActive(false);
-            //Destroy(passenger);
+            Destroy(passenger);
 
-            // Reorder remaining passengers
+            // reorder UI
             for (int i = 0; i < activePassengers.Count; i++)
-            {
                 activePassengers[i].transform.SetSiblingIndex(i);
-            }
         }
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    // rush hour controller
+    public void SetRushHour(bool active) 
     {
-        InvokeRepeating("SpawnPassenger", 1f, 1.5f / spawnRateMultiplier);
-    }
+        spawnRateMultiplier = active ? 2f : 1f;
 
-    public void SetRushHour(bool active)
-    {
-        CancelInvoke("SpawnPassenger");
-
-        if (active)
-        {
-            spawnRateMultiplier = 2f;  // double spawn speed during rush hour
-        }
-        else
-        {
-            spawnRateMultiplier = 1f;  // normal spawn
-        }
-
-        InvokeRepeating("SpawnPassenger", 1f, 1.5f / spawnRateMultiplier);
-    }
-
-
-    // Update is called once per frame
-    void Update()
-    {
-        
+        // restart spawn loop with new rate
+        StartSpawning();
     }
 }

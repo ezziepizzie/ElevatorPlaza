@@ -254,6 +254,8 @@ MonoBehaviour:
   passengerTypes:
   - {fileID: 11400000, guid: fc7a98426b79a3e40ae30389d2aa9b82, type: 2}
   - {fileID: 11400000, guid: f9681a222bcc1a344ab1ae9fd379f057, type: 2}
+  minSpawnTime: 1
+  maxSpawnTime: 3
   spawnRateMultiplier: 1
 --- !u!4 &259619384
 Transform:

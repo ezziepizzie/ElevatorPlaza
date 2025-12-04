@@ -14,12 +14,12 @@ public class GameManager : MonoBehaviour
     public PassengerSpawner passengerSpawner;
 
     [Header("Day Timer")]
-    public float dayDuration = 60f; // 5 mins is kinda goated, has to be odd, 1 min rush hour
+    public float dayDuration = 60f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
     private float dayTimer;
 
     [Header("Rush Hour")]
-    public float rushHourStartPercent = 0.5f; // halfway through day
-    public float rushHourDuration = 60f; // how long rush hour lasts. 1 min
+    public float rushHourStartPercent = 0.5f; // PERCENTAGE. halfway through day
+    public float rushHourDuration = 60f; // SECONDS. how long rush hour lasts. 1 min
     private float rushHourTimer;
     private bool rushHourTriggered = false;
 
@@ -78,13 +78,14 @@ public class GameManager : MonoBehaviour
 
     private void HandleLoading()
     {
+        Debug.Log("[STATE] Loading");
         Time.timeScale = 1;
         dayTimer = dayDuration;
         rushHourTimer = rushHourDuration;
         rushHourTriggered = false;
         currentScore = 0;
-        passengerSpawner.CancelInvoke("SpawnPassenger");
-        passengerSpawner.InvokeRepeating("SpawnPassenger", 1f, 1.5f);
+        passengerSpawner.StopSpawning();
+        passengerSpawner.StartSpawning();
 
         // to add dirtyness
 
@@ -95,26 +96,31 @@ public class GameManager : MonoBehaviour
 
     private void HandleActive()
     {
+        Debug.Log("[STATE] Active");
         Time.timeScale = 1;
+
+        passengerSpawner.StartSpawning();
+        passengerSpawner.SetRushHour(false);
     }
 
     private void HandleRushHour()
     {
-        Debug.Log("Rush Hour Active");
+        Debug.Log("[STATE] Rush Hour Start");
         passengerSpawner.SetRushHour(true);
-        passengerSpawner.CancelInvoke("SpawnPassenger");
-        passengerSpawner.InvokeRepeating("SpawnPassenger", 1f, 1.5f);
     }
 
     private void HandlePause()
     {
+        Debug.Log("[STATE] Pause");
         Time.timeScale = 0;
-        passengerSpawner.CancelInvoke("SpawnPassenger");
+        passengerSpawner.StopSpawning();
     }
 
     private void HandleDayEnd()
     {
+        Debug.Log("[STATE] Day End");
         Time.timeScale = 0;
+        passengerSpawner.StopSpawning();
 
         if (currentScore >= targetScore)
             UpdateGameState(GameState.DayWin);
@@ -124,17 +130,18 @@ public class GameManager : MonoBehaviour
 
     private void HandleDayWin()
     {
-        Debug.Log("Day Win");
+        Debug.Log("[STATE] Day Win");
         currentLevel++;
     }
 
     private void HandleDayLose()
     {
-        Debug.Log("Day Lose");
+        Debug.Log("[STATE] Day Lose");
     }
 
     private void HandleCleaning()
-    { 
+    {
+        Debug.Log("[STATE] Cleaning");
         // these will pause game and stop passenger spawning when toggled
         // Time.timeScale = 0;
         // passengerSpawner.CancelInvoke("SpawnPassenger");
@@ -150,7 +157,8 @@ public class GameManager : MonoBehaviour
     private void HandleTimers()
     {
         // Day Timer
-        dayTimer -= Time.unscaledDeltaTime;
+        dayTimer -= Time.deltaTime;
+
 
         if (dayTimer <= 0)
         {
@@ -158,6 +166,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+
+        // RUSH HOUR SECTION
         float rushStart = dayDuration * rushHourStartPercent;
 
         if (!rushHourTriggered && dayTimer <= rushStart)
@@ -169,13 +179,13 @@ public class GameManager : MonoBehaviour
         // RUSH HOUR TIMER
         if (state == GameState.RushHour)
         {
-            rushHourTimer -= Time.unscaledDeltaTime;
+            rushHourTimer -= Time.deltaTime;
 
             if (rushHourTimer <= 0)
             {
                 passengerSpawner.SetRushHour(false);
                 UpdateGameState(GameState.Active);
-                Debug.Log("Rush Hour Deactivated");
+                Debug.Log("[STATE] Rush Hour End");
             }
         }
     }
