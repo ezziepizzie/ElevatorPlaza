@@ -9,9 +9,16 @@ using UnityEngine.EventSystems;
 public class Elevator : MonoBehaviour, IDropHandler
 {
     public PassengerSpawner spawner;
+
+    [Header("Floor List UI")]
+    public Transform floorListGridParent;
+    public GameObject floorTextPrefab;
+
+    [Header("Elevator Settings")]
     public int MaxCapacity = 4;
     public float travelTime = 1.0f;
     public float unloadingTime = 0.5f;
+
     [HideInInspector] public bool isActive = true;
     [HideInInspector] public int currentCapacity;
     [HideInInspector] public int currentFloor = 0;
@@ -35,11 +42,15 @@ public class Elevator : MonoBehaviour, IDropHandler
         draggable.transform.SetParent(null);
 
         passengerList.Add(passenger);
+        passengerList = passengerList.OrderBy(p => p.targetFloor).ToList();
+
         spawner.RemovePassenger(droppedPassenger);
 
         currentCapacity += passenger.passengerType.passengerAmount;
 
         capacityText.text = currentCapacity + " / " + MaxCapacity;
+
+        UpdateFloorTextUI();
     }
 
     void Start()
@@ -47,11 +58,24 @@ public class Elevator : MonoBehaviour, IDropHandler
         capacityText.text = currentCapacity + " / " + MaxCapacity;
     }
 
+    public void UpdateFloorTextUI()
+    {
+        foreach (Transform child in floorListGridParent)
+            Destroy(child.gameObject);
+
+
+        foreach (Passenger passenger in passengerList)
+        {
+            GameObject floorText = Instantiate(floorTextPrefab, floorListGridParent);
+            floorText.GetComponentInChildren<TextMeshProUGUI>().text = passenger.targetFloor + "F";
+        }
+    }
+
     private IEnumerator MoveElevatorUp()
     {
         isActive = false;
 
-        passengerList = passengerList.OrderBy(p => p.targetFloor).ToList();
+        yield return new WaitForSeconds(travelTime);
 
         while (passengerList.Count > 0)
         {
@@ -74,6 +98,7 @@ public class Elevator : MonoBehaviour, IDropHandler
 
                 passengerList.Remove(passenger);
                 Destroy(passenger.gameObject);
+                UpdateFloorTextUI();
             }
 
             Debug.Log(passengerList.Count);
