@@ -7,31 +7,59 @@ public class Passenger : MonoBehaviour
     public PassengerSpawner spawner;
     public PassengerType passengerType;
     public Image passengerImage;
+    public float maxPatienceLevel;
     public float currentPatienceLevel;
     public int targetFloor;
 
+    public Slider patienceMeter;
     public TextMeshProUGUI floorText;
-    public TextMeshProUGUI patienceText;
+    //public TextMeshProUGUI patienceText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         passengerImage.sprite = passengerType.passengerSprite;
+        maxPatienceLevel = passengerType.patienceLevel;
         currentPatienceLevel = passengerType.patienceLevel;
         targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
         floorText.text = targetFloor.ToString() + "F";
-        patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString() + "s";
+        //patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString() + "s";
+
+        patienceMeter.maxValue = maxPatienceLevel;
+        patienceMeter.value = currentPatienceLevel;
     }
 
     // Update is called once per frame
     void Update()
     {
         currentPatienceLevel -= Time.deltaTime;
-        patienceText.text = Mathf.CeilToInt(Mathf.Max(currentPatienceLevel, 0)).ToString() + "s"; 
+        patienceMeter.value = currentPatienceLevel;
+
+        UpdatePatienceMeterColor();
+
+        //patienceText.text = Mathf.CeilToInt(Mathf.Max(currentPatienceLevel, 0)).ToString() + "s"; 
 
         if (currentPatienceLevel <= 0)
         {
             spawner.RemovePassenger(gameObject);
+        }
+    }
+
+    public void UpdatePatienceMeterColor()
+    {
+        float patienceRatio = currentPatienceLevel / maxPatienceLevel;
+
+        if (patienceRatio > 0.5f)
+        {
+            patienceMeter.fillRect.GetComponent<Image>().color = Color.green;
+        }
+        else if (patienceRatio > 0.2f)
+        {
+            patienceMeter.fillRect.GetComponent<Image>().color = Color.yellow;
+        }
+        else
+        {
+            patienceMeter.fillRect.GetComponent<Image>().color = Color.red;
         }
     }
 }
