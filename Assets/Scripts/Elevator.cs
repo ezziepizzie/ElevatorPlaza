@@ -31,6 +31,7 @@ public class Elevator : MonoBehaviour, IDropHandler
         GameObject droppedPassenger = eventData.pointerDrag;
         Passenger passenger = droppedPassenger.GetComponent<Passenger>();
         Draggable draggable = droppedPassenger.GetComponent<Draggable>();
+        Destroy(draggable.passengerSprite);
 
         if (passenger == null || !isActive) return;
 
@@ -90,15 +91,14 @@ public class Elevator : MonoBehaviour, IDropHandler
 
             foreach (Passenger passenger in passengersToUnload)
             {
-
-                yield return new WaitForSeconds(unloadingTime);
-
                 currentCapacity -= passenger.passengerType.passengerAmount;
                 capacityText.text = currentCapacity + " / " + MaxCapacity;
 
                 passengerList.Remove(passenger);
                 Destroy(passenger.gameObject);
                 UpdateFloorTextUI();
+
+                yield return new WaitForSeconds(unloadingTime);
             }
 
             Debug.Log(passengerList.Count);
