@@ -5,6 +5,7 @@ using UnityEngine.UI;
 public class PassengerType : ScriptableObject
 {
     public string passengerType;
+    public Sprite passengerIcon;
     public Sprite passengerSprite;
     public int passengerAmount;
     public float patienceLevel;

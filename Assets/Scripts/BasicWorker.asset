@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BasicWorker
   m_EditorClassIdentifier: Assembly-CSharp::PassengerType
   passengerType: Basic Worker
-  passengerSprite: {fileID: -2848482501824323179, guid: 6681d6f171fb0b94cb3bb94b7aade39a, type: 3}
+  passengerIcon: {fileID: -2848482501824323179, guid: 6681d6f171fb0b94cb3bb94b7aade39a, type: 3}
+  passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
   passengerAmount: 1
   patienceLevel: 60
   minFloor: 1

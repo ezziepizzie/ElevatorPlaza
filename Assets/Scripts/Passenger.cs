@@ -18,7 +18,7 @@ public class Passenger : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        passengerImage.sprite = passengerType.passengerSprite;
+        passengerImage.sprite = passengerType.passengerIcon;
         maxPatienceLevel = passengerType.patienceLevel;
         currentPatienceLevel = passengerType.patienceLevel;
         targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 

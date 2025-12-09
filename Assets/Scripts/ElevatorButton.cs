@@ -7,6 +7,8 @@ public class ElevatorButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (elevator.isActive == false) return;
+
         elevator.StartCoroutine("MoveElevatorUp");
     }
 }

@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: BusinessMan
   m_EditorClassIdentifier: Assembly-CSharp::PassengerType
   passengerType: Business Man
-  passengerSprite: {fileID: -7069642047187138349, guid: 778a032327188b840b745a5a158fa7ed, type: 3}
+  passengerIcon: {fileID: -7069642047187138349, guid: 778a032327188b840b745a5a158fa7ed, type: 3}
+  passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
   passengerAmount: 1
   patienceLevel: 45
   minFloor: 1

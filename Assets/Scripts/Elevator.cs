@@ -101,7 +101,7 @@ public class Elevator : MonoBehaviour, IDropHandler
                 yield return new WaitForSeconds(unloadingTime);
             }
 
-            Debug.Log(passengerList.Count);
+            // Debug.Log(passengerList.Count);
         }
 
         StartCoroutine(MoveElevatorDown());
