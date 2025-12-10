@@ -31,7 +31,9 @@ public class Elevator : MonoBehaviour, IDropHandler
         GameObject droppedPassenger = eventData.pointerDrag;
         Passenger passenger = droppedPassenger.GetComponent<Passenger>();
         Draggable draggable = droppedPassenger.GetComponent<Draggable>();
-        Destroy(draggable.passengerSprite);
+
+        if (draggable != null)
+            Destroy(draggable.passengerSprite);
 
         if (passenger == null || !isActive) return;
 

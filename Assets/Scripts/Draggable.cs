@@ -46,6 +46,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         passengerSpriteTransform.SetParent(parentAfterDrag);
         passengerSprite.GetComponent<Image>().raycastTarget = true;
         image.color = new Color(1, 1, 1, 1);
-        Destroy(passengerSprite);
+
+        if (passengerSprite != null)
+            Destroy(passengerSprite);
     }
 }
