@@ -5,10 +5,13 @@ using TMPro;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
-public class Elevator : MonoBehaviour, IDropHandler
+public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 {
     public PassengerSpawner spawner;
+    [SerializeField] private TextMeshProUGUI capacityText;
+    [SerializeField] private TextMeshProUGUI floorText;
 
     [Header("Floor List UI")]
     public Transform floorListGridParent;
@@ -19,12 +22,16 @@ public class Elevator : MonoBehaviour, IDropHandler
     public float travelTime = 1.0f;
     public float unloadingTime = 0.5f;
 
+    [Header("Broken Elevator Settings")]
+    public bool isBroken = false;
+    public TextMeshProUGUI brokenText;
+    public Slider fixMeter;
+    public int fixTapsRequired;
+
     [HideInInspector] public bool isActive = true;
     [HideInInspector] public int currentCapacity;
     [HideInInspector] public int currentFloor = 0;
     [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
-    [SerializeField] private TextMeshProUGUI capacityText;
-    [SerializeField] private TextMeshProUGUI floorText;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -59,6 +66,9 @@ public class Elevator : MonoBehaviour, IDropHandler
     void Start()
     {
         capacityText.text = currentCapacity + " / " + MaxCapacity;
+
+        fixMeter.gameObject.SetActive(false);
+        brokenText.gameObject.SetActive(false);
     }
 
     public void UpdateFloorTextUI()
@@ -124,5 +134,34 @@ public class Elevator : MonoBehaviour, IDropHandler
         }
 
         isActive = true;
+    }
+
+    public void BreakElevator()
+    {
+        if (isBroken == false)
+        {
+            isBroken = true;
+            isActive = false;
+            fixMeter.gameObject.SetActive(true);
+            brokenText.gameObject.SetActive(true);
+            fixMeter.value = 0;
+        }
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (isBroken)
+        {
+            fixMeter.value += fixMeter.maxValue / fixTapsRequired;
+            Debug.Log("Fix meter: " + fixMeter.value);
+
+            if (fixMeter.value >= 1f)
+            {
+                isBroken = false;
+                isActive = true;
+                fixMeter.gameObject.SetActive(false);
+                brokenText.gameObject.SetActive(false);
+            }
+        }
     }
 }
