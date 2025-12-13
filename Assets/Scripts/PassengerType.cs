@@ -4,7 +4,7 @@ using UnityEngine.UI;
 [CreateAssetMenu(fileName = "NewPassengerType", menuName = "Scriptable Objects/Passenger Type")]
 public class PassengerType : ScriptableObject
 {
-    public string passengerType;
+    public string passengerName;
     public Sprite passengerIcon;
     public Sprite passengerSprite;
     public int passengerAmount;

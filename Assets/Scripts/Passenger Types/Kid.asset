@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 509e1f727356a244dba01a2d01a555a4, type: 3}
   m_Name: Kid
   m_EditorClassIdentifier: Assembly-CSharp::PassengerType
-  passengerType: Kid
+  passengerName: KID
   passengerIcon: {fileID: -6098071732550899731, guid: 4a87695cd6a4bd54ab78e0b917ffa6e4, type: 3}
   passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
   passengerAmount: 1

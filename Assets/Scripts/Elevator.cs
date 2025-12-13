@@ -97,17 +97,18 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         foreach (Passenger passenger in passengerList)
         {
-            GameObject floorText = Instantiate(floorTextPrefab, floorListGridParent);
+            GameObject floorUI = Instantiate(floorTextPrefab, floorListGridParent);
+            floorUI.GetComponent<FloorUI>().SetText(passenger);
 
             /*if (passenger.passengerType.isKid)
             {
                 floorText.GetComponentInChildren<TextMeshProUGUI>().text = "?";
-            }*/
+            }
 
             //else
             //{
-                floorText.GetComponentInChildren<TextMeshProUGUI>().text = passenger.targetFloor + "F";
-            //}
+                floorUI.GetComponentInChildren<TextMeshProUGUI>().text = passenger.targetFloor + "F";
+            //}*/
         }
     }
 
