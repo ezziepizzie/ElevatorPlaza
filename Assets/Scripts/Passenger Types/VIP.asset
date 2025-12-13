@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509e1f727356a244dba01a2d01a555a4, type: 3}
+  m_Name: VIP
+  m_EditorClassIdentifier: Assembly-CSharp::PassengerType
+  passengerType: VIP
+  passengerIcon: {fileID: 7242658966815013947, guid: 2bcb8fa0d718a93499a771ad1166cacd, type: 3}
+  passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
+  passengerAmount: 1
+  patienceLevel: 30
+  minFloor: 1
+  maxFloor: 10
+  isVIP: 1

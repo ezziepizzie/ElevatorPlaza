@@ -44,11 +44,29 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         if (passenger == null || !isActive) return;
 
+        // VIP logic
+        if (passenger.passengerType.isVIP)
+        {
+            if(currentCapacity > 0)
+            {
+                return;
+            }
+        }
+
+        else
+        {
+            if(passengerList.Any(p => p.passengerType.isVIP))
+            {
+                return;
+            }
+        }
+
         if (currentCapacity + passenger.passengerType.passengerAmount > MaxCapacity)
         {
             return;
         }
 
+        // Successfully dropped passenger into elevator
         draggable.transform.SetParent(null);
 
         passengerList.Add(passenger);
@@ -80,7 +98,16 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         foreach (Passenger passenger in passengerList)
         {
             GameObject floorText = Instantiate(floorTextPrefab, floorListGridParent);
-            floorText.GetComponentInChildren<TextMeshProUGUI>().text = passenger.targetFloor + "F";
+
+            /*if (passenger.passengerType.isKid)
+            {
+                floorText.GetComponentInChildren<TextMeshProUGUI>().text = "?";
+            }*/
+
+            //else
+            //{
+                floorText.GetComponentInChildren<TextMeshProUGUI>().text = passenger.targetFloor + "F";
+            //}
         }
     }
 

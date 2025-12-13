@@ -22,7 +22,16 @@ public class Passenger : MonoBehaviour
         maxPatienceLevel = passengerType.patienceLevel;
         currentPatienceLevel = passengerType.patienceLevel;
         targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
-        floorText.text = targetFloor.ToString() + "F";
+
+        if (passengerType.isKid)
+        {
+            floorText.text = "?";
+        }
+        else
+        {
+            floorText.text = targetFloor.ToString() + "F";
+        }
+       
         //patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString() + "s";
 
         patienceMeter.maxValue = maxPatienceLevel;
