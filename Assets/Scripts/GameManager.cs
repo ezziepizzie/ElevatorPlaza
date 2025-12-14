@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -84,8 +85,11 @@ public class GameManager : MonoBehaviour
         rushHourTimer = rushHourDuration;
         rushHourTriggered = false;
         currentScore = 0;
-        passengerSpawner.StopSpawning();
-        passengerSpawner.StartSpawning();
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            passengerSpawner.StopSpawning();
+            passengerSpawner.StartSpawning();
+        }
 
         // to add dirtyness
 
@@ -99,8 +103,11 @@ public class GameManager : MonoBehaviour
         Debug.Log("[STATE] Active");
         Time.timeScale = 1;
 
-        passengerSpawner.StartSpawning();
-        passengerSpawner.SetRushHour(false);
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            passengerSpawner.StartSpawning();
+            passengerSpawner.SetRushHour(false);
+        }
     }
 
     private void HandleRushHour()
@@ -113,7 +120,10 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("[STATE] Pause");
         Time.timeScale = 0;
-        passengerSpawner.StopSpawning();
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            passengerSpawner.StopSpawning();
+        }
     }
 
     private void HandleDayEnd()

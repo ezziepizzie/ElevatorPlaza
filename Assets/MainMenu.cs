@@ -8,11 +8,6 @@ public class MainMenu : MonoBehaviour
         SceneManager.LoadSceneAsync("Game");
     }
 
-    public void SettingsApply()
-    {
-        // change settings here
-    }
-
     public void QuitGame()
     {
         Application.Quit();
