@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 509e1f727356a244dba01a2d01a555a4, type: 3}
   m_Name: VIP
   m_EditorClassIdentifier: Assembly-CSharp::PassengerType
-  passengerType: VIP
-  passengerIcon: {fileID: 7242658966815013947, guid: 2bcb8fa0d718a93499a771ad1166cacd, type: 3}
+  passengerName: VIP
+  passengerIcon: {fileID: -8116510603142688913, guid: 07378bfc3c9615c4e8e1c26e4ed881a5, type: 3}
   passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
   passengerAmount: 1
   patienceLevel: 30
   minFloor: 1
   maxFloor: 10
   isVIP: 1
+  isKid: 0
