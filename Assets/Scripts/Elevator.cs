@@ -12,6 +12,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     public PassengerSpawner spawner;
     [SerializeField] private TextMeshProUGUI capacityText;
     [SerializeField] private TextMeshProUGUI floorText;
+    [SerializeField] private Animator animator;
 
     [Header("Floor List UI")]
     public Transform floorListGridParent;
@@ -116,6 +117,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         isActive = false;
 
+        animator.SetBool("doorClosing", true);
+        yield return new WaitForSeconds(0.3f);
+
         yield return new WaitForSeconds(travelTime);
 
         while (passengerList.Count > 0)
@@ -161,6 +165,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             yield return new WaitForSeconds(travelTime);
         }
 
+        animator.SetBool("doorClosing", false);
+        yield return new WaitForSeconds(0.3f);
         isActive = true;
     }
 
