@@ -18,9 +18,8 @@ public class ElevatorButton : MonoBehaviour, IPointerClickHandler
 
         if(elevator.currentCapacity == 0) return;
 
-        elevatorButtonAnim.SetBool("buttonClicked", false);
         elevator.StartCoroutine("MoveElevatorUp");
         audioManager.PlaySFX(audioManager.elevetorButtonPress);
-        elevatorButtonAnim.SetBool("buttonClicked", true);
+        elevatorButtonAnim.SetTrigger("buttonClicked");
     }
 }

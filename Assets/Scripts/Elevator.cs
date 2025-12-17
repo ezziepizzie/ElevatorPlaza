@@ -117,7 +117,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         isActive = false;
 
-        animator.SetBool("doorClosing", true);
+        animator.SetTrigger("doorClosing");
         yield return new WaitForSeconds(0.3f);
 
         yield return new WaitForSeconds(travelTime);
@@ -165,7 +165,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             yield return new WaitForSeconds(travelTime);
         }
 
-        animator.SetBool("doorClosing", false);
+        animator.SetTrigger("doorOpening");
         yield return new WaitForSeconds(0.3f);
         isActive = true;
     }
