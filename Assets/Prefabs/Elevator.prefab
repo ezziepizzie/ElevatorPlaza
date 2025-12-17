@@ -297,7 +297,7 @@ MonoBehaviour:
   spawner: {fileID: 0}
   capacityText: {fileID: 8138799970113379175}
   floorText: {fileID: 336811098142914233}
-  animator: {fileID: 547782917079954538}
+  elevatorDoorAnim: {fileID: 547782917079954538}
   floorListGridParent: {fileID: 3187847843338121600}
   floorTextPrefab: {fileID: 1537439093797782827, guid: c2a4a7c892db0444dbdfc39f9b852061, type: 3}
   MaxCapacity: 4

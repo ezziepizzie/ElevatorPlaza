@@ -12,7 +12,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     public PassengerSpawner spawner;
     [SerializeField] private TextMeshProUGUI capacityText;
     [SerializeField] private TextMeshProUGUI floorText;
-    [SerializeField] private Animator animator;
+    [SerializeField] private Animator elevatorDoorAnim;
 
     [Header("Floor List UI")]
     public Transform floorListGridParent;
@@ -117,7 +117,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         isActive = false;
 
-        animator.SetTrigger("doorClosing");
+        elevatorDoorAnim.SetTrigger("doorClosing");
         yield return new WaitForSeconds(0.3f);
 
         yield return new WaitForSeconds(travelTime);
@@ -165,7 +165,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             yield return new WaitForSeconds(travelTime);
         }
 
-        animator.SetTrigger("doorOpening");
+        elevatorDoorAnim.SetTrigger("doorOpening");
         yield return new WaitForSeconds(0.3f);
         isActive = true;
     }
@@ -176,9 +176,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             isBroken = true;
             isActive = false;
-            fixMeter.gameObject.SetActive(true);
             brokenText.gameObject.SetActive(true);
             fixMeter.value = 0;
+            elevatorDoorAnim.SetTrigger("doorClosing");
         }
     }
 
@@ -188,6 +188,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             fixMeter.value += fixMeter.maxValue / fixTapsRequired;
             Debug.Log("Fix meter: " + fixMeter.value);
+            fixMeter.gameObject.SetActive(true);
 
             if (fixMeter.value >= 1f)
             {
@@ -195,6 +196,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
                 isActive = true;
                 fixMeter.gameObject.SetActive(false);
                 brokenText.gameObject.SetActive(false);
+                elevatorDoorAnim.SetTrigger("doorOpening");
             }
         }
     }
