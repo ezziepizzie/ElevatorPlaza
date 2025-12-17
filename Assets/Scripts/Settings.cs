@@ -44,7 +44,7 @@ public class SettingsMenuUI : MonoBehaviour
     void CloseMenu()
     {
         GameManager.instance.UpdateGameState(GameState.Active);
-        FindObjectOfType<MenuManager>().ForceCloseState();
+        FindFirstObjectByType<MenuManager>().ForceCloseState();
         Destroy(gameObject);
     }
 }

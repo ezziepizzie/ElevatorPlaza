@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -17,6 +18,10 @@ public class GameManager : MonoBehaviour
     [Header("Day Timer")]
     public float dayDuration = 60f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
     private float dayTimer;
+    private int startHour = 9;
+    private int endHour = 17;
+    private int currentHour;
+    public TextMeshProUGUI dayTimerText;
 
     [Header("Rush Hour")]
     public float rushHourStartPercent = 0.5f; // PERCENTAGE. halfway through day
@@ -85,6 +90,7 @@ public class GameManager : MonoBehaviour
         rushHourTimer = rushHourDuration;
         rushHourTriggered = false;
         currentScore = 0;
+        currentHour = startHour;
         if (SceneManager.GetActiveScene().name == "Game")
         {
             passengerSpawner.StopSpawning();
@@ -169,13 +175,13 @@ public class GameManager : MonoBehaviour
         // Day Timer
         dayTimer -= Time.deltaTime;
 
+        UpdateHour();
 
         if (dayTimer <= 0)
         {
             UpdateGameState(GameState.DayEnd);
             return;
         }
-
 
         // RUSH HOUR SECTION
         float rushStart = dayDuration * rushHourStartPercent;
@@ -215,6 +221,32 @@ public class GameManager : MonoBehaviour
     public void AddRepairScore(int amount)
     {
         AddScore(amount);
+    }
+
+    private void UpdateHour()
+    {
+        float elapsedPercent = 1 - (dayTimer / dayDuration);
+        int totalHours = endHour - startHour;
+        int calculatedHour = startHour + Mathf.FloorToInt(elapsedPercent * totalHours);
+
+        if (calculatedHour != currentHour)
+        {
+            currentHour = calculatedHour;
+            //Debug.Log("Current Hour: " + currentHour);
+
+            if(currentHour < 12)
+            {
+                dayTimerText.text = currentHour + " AM";
+            }
+            else if (currentHour == 12)
+            {
+                dayTimerText.text = "12 PM";
+            }
+            else
+            {
+                dayTimerText.text = (currentHour - 12) + " PM";
+            }
+        }
     }
 
 }
