@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -16,7 +17,7 @@ public class GameManager : MonoBehaviour
     public PassengerSpawner passengerSpawner;
 
     [Header("Day Timer")]
-    public float dayDuration = 60f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
+    public float dayDuration = 120f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
     private float dayTimer;
     private int startHour = 9;
     private int endHour = 17;
@@ -35,6 +36,12 @@ public class GameManager : MonoBehaviour
 
     [Header("Level")]
     public int currentLevel = 1;
+
+    [Header("Elevators")]
+    public List<Elevator> elevators = new List<Elevator>();
+    public float minBreakTime = 15f;
+    public float maxBreakTime = 25f;
+    private float breakdownTimer;
 
     private void Awake()
     {
@@ -96,6 +103,8 @@ public class GameManager : MonoBehaviour
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
         }
+
+        breakdownTimer = GetRandomBreakTime();
 
         // to add dirtyness
 
@@ -183,6 +192,8 @@ public class GameManager : MonoBehaviour
             return;
         }
 
+        HandleBreakdowns();
+
         // RUSH HOUR SECTION
         float rushStart = dayDuration * rushHourStartPercent;
 
@@ -203,6 +214,21 @@ public class GameManager : MonoBehaviour
                 UpdateGameState(GameState.Active);
                 Debug.Log("[STATE] Rush Hour End");
             }
+        }
+    }
+
+    // handle elevator breakdown timer cooldown
+    private void HandleBreakdowns()
+    {
+        if (state != GameState.Active && state != GameState.RushHour)
+            return;
+
+        breakdownTimer -= Time.deltaTime;
+
+        if (breakdownTimer <= 0f)
+        {
+            TryBreakRandomElevator();
+            breakdownTimer = GetRandomBreakTime();
         }
     }
 
@@ -249,6 +275,34 @@ public class GameManager : MonoBehaviour
         }
     }
 
+    // get random time for next breakdown
+    private float GetRandomBreakTime()
+    {
+        return UnityEngine.Random.Range(minBreakTime, maxBreakTime);
+    }
+
+    // attempt to break a random elevator
+    private void TryBreakRandomElevator()
+    {
+        List<Elevator> validElevators = new List<Elevator>();
+
+        foreach (Elevator e in elevators)
+        {
+            if (!e.isBroken)
+            {
+                validElevators.Add(e);
+            }
+            
+        }
+
+        if (validElevators.Count == 0)
+            return;
+
+        Elevator chosen = validElevators[UnityEngine.Random.Range(0, validElevators.Count)];
+        chosen.BreakElevator();
+
+        Debug.Log("[BREAKDOWN] Elevator broke!");
+    }
 }
 
 public enum GameState

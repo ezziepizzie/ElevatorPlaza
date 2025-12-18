@@ -25,11 +25,12 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     [Header("Broken Elevator Settings")]
     public bool isBroken = false;
-    public TextMeshProUGUI brokenText;
+    public GameObject brokenSign;
     public Slider fixMeter;
     public int fixTapsRequired;
 
     [HideInInspector] public bool isActive = true;
+    [HideInInspector] public bool isMoving = false;
     [HideInInspector] public int currentCapacity;
     [HideInInspector] public int currentFloor = 0;
     [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
@@ -87,7 +88,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         capacityText.text = currentCapacity + " / " + MaxCapacity;
 
         fixMeter.gameObject.SetActive(false);
-        brokenText.gameObject.SetActive(false);
+        brokenSign.gameObject.SetActive(false);
     }
 
     public void UpdateFloorTextUI()
@@ -100,6 +101,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             GameObject floorUI = Instantiate(floorTextPrefab, floorListGridParent);
             floorUI.GetComponent<FloorUI>().SetText(passenger);
+
+            // uncomment if we wanna hide the kid's target floor
 
             /*if (passenger.passengerType.isKid)
             {
@@ -116,36 +119,46 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     private IEnumerator MoveElevatorUp()
     {
         isActive = false;
+        isMoving = true;
 
         elevatorDoorAnim.SetTrigger("doorClosing");
-        yield return new WaitForSeconds(0.3f);
-
-        yield return new WaitForSeconds(travelTime);
+        yield return new WaitForSeconds(0.5f);
 
         while (passengerList.Count > 0)
         {
-            Passenger nextPassenger = passengerList[0];
+            while (isBroken)
+            {
+                yield return null;
+            }
+
+            yield return new WaitForSeconds(travelTime);
 
             currentFloor++;
             floorText.text = currentFloor + "F";
-
-            yield return new WaitForSeconds(travelTime);
 
             var passengersToUnload = passengerList.Where(p => p.targetFloor == currentFloor).ToList();
 
             foreach (Passenger passenger in passengersToUnload)
             {
+                while (isBroken)
+                {
+                    yield return null;
+                }
+
+                yield return new WaitForSeconds(unloadingTime);
+
                 currentCapacity -= passenger.passengerType.passengerAmount;
                 capacityText.text = currentCapacity + " / " + MaxCapacity;
 
                 passengerList.Remove(passenger);
                 Destroy(passenger.gameObject);
                 UpdateFloorTextUI();
-
-                yield return new WaitForSeconds(unloadingTime);
             }
+        }
 
-            // Debug.Log(passengerList.Count);
+        while (isBroken)
+        {
+            yield return null;
         }
 
         StartCoroutine(MoveElevatorDown());
@@ -155,6 +168,13 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     {
         while (currentFloor != 0)
         {
+            yield return new WaitForSeconds(travelTime);
+
+            while (isBroken)
+            {
+                yield return null;
+            }
+
             currentFloor--;
 
             if (currentFloor == 0)
@@ -162,12 +182,15 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             else
                 floorText.text = currentFloor + "F";
 
-            yield return new WaitForSeconds(travelTime);
+            //yield return new WaitForSeconds(travelTime);
         }
 
-        elevatorDoorAnim.SetTrigger("doorOpening");
-        yield return new WaitForSeconds(0.3f);
+        if(!isBroken)
+            elevatorDoorAnim.SetTrigger("doorOpening");
+
+        yield return new WaitForSeconds(0.5f);
         isActive = true;
+        isMoving = false;
     }
 
     public void BreakElevator()
@@ -176,9 +199,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         {
             isBroken = true;
             isActive = false;
-            brokenText.gameObject.SetActive(true);
+            brokenSign.gameObject.SetActive(true);
             fixMeter.value = 0;
-            elevatorDoorAnim.SetTrigger("doorClosing");
+
+            if(!isMoving)
+                elevatorDoorAnim.SetTrigger("doorClosing");
         }
     }
 
@@ -195,8 +220,10 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
                 isBroken = false;
                 isActive = true;
                 fixMeter.gameObject.SetActive(false);
-                brokenText.gameObject.SetActive(false);
-                elevatorDoorAnim.SetTrigger("doorOpening");
+                brokenSign.gameObject.SetActive(false);
+
+                if(!isMoving)
+                    elevatorDoorAnim.SetTrigger("doorOpening");
             }
         }
     }
