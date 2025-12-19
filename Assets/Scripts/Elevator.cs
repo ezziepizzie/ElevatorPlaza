@@ -37,6 +37,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        ToolType currentTool = GameManager.instance.currentTool;
+
+        if (currentTool != ToolType.Hand)
+            return;
+
         GameObject droppedPassenger = eventData.pointerDrag;
         Passenger passenger = droppedPassenger.GetComponent<Passenger>();
         Draggable draggable = droppedPassenger.GetComponent<Draggable>();
@@ -225,6 +230,26 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        ToolType currentTool = GameManager.instance.currentTool;
+
+        if (currentTool == ToolType.Hammer)
+        {
+            FixElevator();
+        }
+
+        else if (currentTool == ToolType.Sponge)
+        {
+            // CleanElevator();
+        }
+
+        else
+        {
+            // do nothing
+        }
+    }
+
+    public void FixElevator()
+    {
         if (isBroken)
         {
             fixMeter.value += fixMeter.maxValue / fixTapsRequired;
@@ -238,7 +263,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
                 fixMeter.gameObject.SetActive(false);
                 brokenSign.gameObject.SetActive(false);
 
-                if(!isMoving)
+                if (!isMoving)
                     elevatorDoorAnim.SetTrigger("doorOpening");
             }
         }

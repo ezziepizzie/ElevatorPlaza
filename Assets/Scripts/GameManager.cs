@@ -43,6 +43,10 @@ public class GameManager : MonoBehaviour
     public float maxBreakTime = 25f;
     private float breakdownTimer;
 
+    [Header("Player Tool")]
+    public ToolType currentTool = ToolType.Hand;
+    public TextMeshProUGUI currentToolText;
+
     private void Awake()
     {
         instance = this;
@@ -98,6 +102,9 @@ public class GameManager : MonoBehaviour
         rushHourTriggered = false;
         currentScore = 0;
         currentHour = startHour;
+        
+        currentToolText.text = "Current Tool: " + currentTool.ToString();
+
         if (SceneManager.GetActiveScene().name == "Game")
         {
             passengerSpawner.StopSpawning();
@@ -174,6 +181,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
+        ScrollTools();
+
         // handle all the timers
         if (state == GameState.Active || state == GameState.RushHour)
             HandleTimers();
@@ -303,6 +312,28 @@ public class GameManager : MonoBehaviour
 
         Debug.Log("[BREAKDOWN] Elevator broke!");
     }
+
+    private void ScrollTools()
+    {
+        float scroll = Input.mouseScrollDelta.y;
+
+        if (scroll == 0) return;
+
+        int toolCount = System.Enum.GetValues(typeof(ToolType)).Length;
+        int currentIndex = (int)currentTool;
+
+        if (scroll > 0)
+            currentIndex--;
+        else
+            currentIndex++;
+
+        currentIndex = (currentIndex + toolCount) % toolCount;
+
+        currentTool = (ToolType)currentIndex;
+
+        currentToolText.text = "Current Tool: " + currentTool.ToString();
+        Debug.Log("Current Tool: " + currentTool);
+    }
 }
 
 public enum GameState
@@ -315,4 +346,11 @@ public enum GameState
     DayWin, // win ui, save progress, next level
     DayLose, // lose ui, restart, keep same level
     Cleaning // lock interactions for player convinience
+}
+
+public enum ToolType
+{
+    Hand,
+    Hammer,
+    Sponge
 }

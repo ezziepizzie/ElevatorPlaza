@@ -14,9 +14,10 @@ public class ElevatorButton : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        if (elevator.isActive == false) return;
+        ToolType currentTool = GameManager.instance.currentTool;
 
-        if(elevator.currentCapacity == 0) return;
+        if (currentTool != ToolType.Hand || elevator.isActive == false || elevator.currentCapacity == 0)
+            return;
 
         elevator.StartCoroutine("MoveElevatorUp");
         audioManager.PlaySFX(audioManager.elevetorButtonPress);
