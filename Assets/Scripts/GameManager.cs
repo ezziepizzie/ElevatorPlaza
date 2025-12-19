@@ -45,7 +45,6 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Tool")]
     public ToolType currentTool = ToolType.Hand;
-    public TextMeshProUGUI currentToolText;
 
     private void Awake()
     {
@@ -330,8 +329,7 @@ public class GameManager : MonoBehaviour
 
         SwitchToolCursor();
 
-        currentToolText.text = "Current Tool: " + currentTool.ToString();
-        Debug.Log("Current Tool: " + currentTool);
+        //Debug.Log("Current Tool: " + currentTool);
     }
 
     public void SwitchToolCursor()
