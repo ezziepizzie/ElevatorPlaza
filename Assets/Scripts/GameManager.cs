@@ -102,20 +102,16 @@ public class GameManager : MonoBehaviour
         rushHourTriggered = false;
         currentScore = 0;
         currentHour = startHour;
-        
-        currentToolText.text = "Current Tool: " + currentTool.ToString();
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
+            SwitchToolCursor();
+            breakdownTimer = GetRandomBreakTime();
         }
 
-        breakdownTimer = GetRandomBreakTime();
-
         // to add dirtyness
-
-
 
         UpdateGameState(GameState.Active);
     }
@@ -181,7 +177,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        ScrollTools();
+        if (SceneManager.GetActiveScene().name == "Game" && state != GameState.Paused)
+            ScrollTools();
 
         // handle all the timers
         if (state == GameState.Active || state == GameState.RushHour)
@@ -331,8 +328,31 @@ public class GameManager : MonoBehaviour
 
         currentTool = (ToolType)currentIndex;
 
+        SwitchToolCursor();
+
         currentToolText.text = "Current Tool: " + currentTool.ToString();
         Debug.Log("Current Tool: " + currentTool);
+    }
+
+    public void SwitchToolCursor()
+    {
+        switch (currentTool)
+        {
+            case ToolType.Hand:
+                CursorController.instance.ChangeCursor(CursorController.instance.handCursor);
+                break;
+
+            case ToolType.Hammer:
+                CursorController.instance.ChangeCursor(CursorController.instance.hammerCursor);
+                break;
+
+            case ToolType.Sponge:
+                CursorController.instance.ChangeCursor(CursorController.instance.spongeCursor);
+                break;
+            default:
+                CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
+                break;
+        }
     }
 }
 

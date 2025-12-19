@@ -242,6 +242,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             // CleanElevator();
         }
 
+        else if (currentTool == ToolType.Hand)
+        {
+            // open or close door
+        }
+
         else
         {
             // do nothing

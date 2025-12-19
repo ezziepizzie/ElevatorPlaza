@@ -38,12 +38,19 @@ public class SettingsMenuUI : MonoBehaviour
     public void OnMainMenuPressed()
     {
         Time.timeScale = 1f;
+        CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
         SceneManager.LoadScene("MainMenu");
     }
 
     void CloseMenu()
     {
         GameManager.instance.UpdateGameState(GameState.Active);
+
+        if(SceneManager.GetActiveScene().name == "Game")
+        {
+            GameManager.instance.SwitchToolCursor();
+        }
+
         FindFirstObjectByType<MenuManager>().ForceCloseState();
         Destroy(gameObject);
     }

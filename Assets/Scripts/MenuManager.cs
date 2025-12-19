@@ -34,6 +34,7 @@ public class MenuManager : MonoBehaviour
 
         GameManager.instance.UpdateGameState(GameState.Paused);
         isOpen = true;
+        CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
     }
 
     void CloseMenu()
@@ -46,6 +47,8 @@ public class MenuManager : MonoBehaviour
 
         GameManager.instance.UpdateGameState(GameState.Active);
         isOpen = false;
+
+        GameManager.instance.SwitchToolCursor();
     }
 
     public void ForceCloseState()
