@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;  
@@ -9,11 +11,11 @@ public class Passenger : MonoBehaviour
     public Image passengerImage;
     public float maxPatienceLevel;
     public float currentPatienceLevel;
-    public int targetFloor;
+    //public int targetFloor;
+    public List<int> targetFloors = new List<int>();
 
     public Slider patienceMeter;
     public TextMeshProUGUI floorText;
-    //public TextMeshProUGUI patienceText;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -21,7 +23,7 @@ public class Passenger : MonoBehaviour
         passengerImage.sprite = passengerType.passengerIcon;
         maxPatienceLevel = passengerType.patienceLevel;
         currentPatienceLevel = passengerType.patienceLevel;
-        targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
+        /*targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
 
         if (passengerType.isKid)
         {
@@ -30,9 +32,10 @@ public class Passenger : MonoBehaviour
         else
         {
             floorText.text = targetFloor.ToString() + "F";
-        }
-       
-        //patienceText.text = Mathf.CeilToInt(currentPatienceLevel).ToString() + "s";
+        }*/
+
+        GetPassengerFloors();
+        UpdateFloorText();
 
         patienceMeter.maxValue = maxPatienceLevel;
         patienceMeter.value = currentPatienceLevel;
@@ -45,8 +48,6 @@ public class Passenger : MonoBehaviour
         patienceMeter.value = currentPatienceLevel;
 
         UpdatePatienceMeterColor();
-
-        //patienceText.text = Mathf.CeilToInt(Mathf.Max(currentPatienceLevel, 0)).ToString() + "s"; 
 
         if (currentPatienceLevel <= 0)
         {
@@ -69,6 +70,48 @@ public class Passenger : MonoBehaviour
         else
         {
             patienceMeter.fillRect.GetComponent<Image>().color = Color.red;
+        }
+    }
+
+    public void GetPassengerFloors()
+    {
+        targetFloors.Clear();
+
+        int stopCount = 1;
+        //int stopCount = passengerType.isCourier? passengerType.courierFloorsCount: 1;
+
+        if (passengerType.isCourier)
+        {
+            stopCount = Random.Range(passengerType.minDeliveryFloors, passengerType.maxDeliveryFloors + 1);
+        }
+
+        while (targetFloors.Count < stopCount)
+        {
+            int floor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1);
+            if (!targetFloors.Contains(floor))
+            {
+                targetFloors.Add(floor);
+            }
+        }
+
+        targetFloors.Sort();
+    }
+
+    public void UpdateFloorText()
+    {
+        if (passengerType.isKid)
+        {
+            floorText.text = "?";
+            return;
+        }
+
+        if (targetFloors.Count == 1)
+        {
+            floorText.text = targetFloors[0].ToString() + "F";
+        }
+        else
+        {
+            floorText.text = string.Join(", ", targetFloors.Select(f => f + "F"));
         }
     }
 }

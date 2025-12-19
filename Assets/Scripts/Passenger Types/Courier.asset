@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 509e1f727356a244dba01a2d01a555a4, type: 3}
+  m_Name: Courier
+  m_EditorClassIdentifier: Assembly-CSharp::PassengerType
+  passengerName: C
+  passengerIcon: {fileID: -2572236593908976804, guid: ac4f2fb3a459dc54d9ee3d08a8711a5b, type: 3}
+  passengerSprite: {fileID: 1538959334911278073, guid: 6f320c4afe8adfd4d850f7db16e1ea6e, type: 3}
+  passengerAmount: 1
+  patienceLevel: 60
+  minFloor: 1
+  maxFloor: 10
+  isVIP: 0
+  isKid: 0
+  isCourier: 1
+  minDeliveryFloors: 2
+  maxDeliveryFloors: 2

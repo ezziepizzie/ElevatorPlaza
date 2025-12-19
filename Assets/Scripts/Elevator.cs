@@ -72,7 +72,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
         draggable.transform.SetParent(null);
 
         passengerList.Add(passenger);
-        passengerList = passengerList.OrderBy(p => p.targetFloor).ToList();
+        //passengerList = passengerList.OrderBy(p => p.targetFloor).ToList();
+        passengerList = passengerList.OrderBy(p => p.targetFloors.Min()).ToList();
 
         spawner.RemovePassenger(droppedPassenger);
 
@@ -136,7 +137,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
             currentFloor++;
             floorText.text = currentFloor + "F";
 
-            var passengersToUnload = passengerList.Where(p => p.targetFloor == currentFloor).ToList();
+            //var passengersToUnload = passengerList.Where(p => p.targetFloor == currentFloor).ToList();
+            var passengersToUnload = passengerList.Where(p => p.targetFloors.Contains(currentFloor)).ToList();
 
             foreach (Passenger passenger in passengersToUnload)
             {
@@ -147,9 +149,23 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
                 yield return new WaitForSeconds(unloadingTime);
 
-                currentCapacity -= passenger.passengerType.passengerAmount;
+                /*currentCapacity -= passenger.passengerType.passengerAmount;
                 capacityText.text = currentCapacity + " / " + MaxCapacity;
 
+                passengerList.Remove(passenger);
+                Destroy(passenger.gameObject);
+                UpdateFloorTextUI();*/
+
+                passenger.targetFloors.Remove(currentFloor);
+                
+                if (passenger.targetFloors.Count > 0)
+                {
+                    UpdateFloorTextUI();
+                    continue;
+                }
+
+                currentCapacity -= passenger.passengerType.passengerAmount;
+                capacityText.text = currentCapacity + " / " + MaxCapacity;
                 passengerList.Remove(passenger);
                 Destroy(passenger.gameObject);
                 UpdateFloorTextUI();

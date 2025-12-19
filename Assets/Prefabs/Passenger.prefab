@@ -109,8 +109,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 130, y: 75}
-  m_SizeDelta: {x: 65, y: 65}
+  m_AnchoredPosition: {x: 130, y: 110}
+  m_SizeDelta: {x: 220, y: 65}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5100637677095433544
 CanvasRenderer:
@@ -415,7 +415,7 @@ MonoBehaviour:
   passengerImage: {fileID: 7023442897480674700}
   maxPatienceLevel: 0
   currentPatienceLevel: 0
-  targetFloor: 0
+  targetFloors: 
   patienceMeter: {fileID: 7609243881306735124}
   floorText: {fileID: 6253466156490401536}
 --- !u!1 &6867226137561183186

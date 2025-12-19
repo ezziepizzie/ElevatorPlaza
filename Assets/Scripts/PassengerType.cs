@@ -16,4 +16,8 @@ public class PassengerType : ScriptableObject
     [Header("Special Rules")]
     public bool isVIP;
     public bool isKid;
+    public bool isCourier;
+    public int minDeliveryFloors;
+    public int maxDeliveryFloors;
+    //public int courierFloorsCount;
 }
