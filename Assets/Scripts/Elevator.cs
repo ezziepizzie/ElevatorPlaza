@@ -7,7 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
+public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     public PassengerSpawner spawner;
     [SerializeField] private TextMeshProUGUI capacityText;
@@ -29,11 +29,18 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
     public Slider fixMeter;
     public int fixTapsRequired;
 
+    [Header("Cleaning Settings")]
+    public bool isScrubbing = false;
+    public Slider dirtyMeter;
+    public bool isDirty => dirtyMeter.value > 0f;
+    [SerializeField] private float cleanRate = 0.25f;
+
     [HideInInspector] public bool isActive = true;
     [HideInInspector] public bool isMoving = false;
     [HideInInspector] public int currentCapacity;
     [HideInInspector] public int currentFloor = 0;
     [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
+
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -95,6 +102,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
         fixMeter.gameObject.SetActive(false);
         brokenSign.gameObject.SetActive(false);
+
+        dirtyMeter.value = 0f;
     }
 
     public void UpdateFloorTextUI()
@@ -230,47 +239,63 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        ToolType currentTool = GameManager.instance.currentTool;
+        if (GameManager.instance.currentTool != ToolType.Hammer)
+            return;
 
-        if (currentTool == ToolType.Hammer)
-        {
+        if (isBroken)
             FixElevator();
-        }
-
-        else if (currentTool == ToolType.Sponge)
-        {
-            // CleanElevator();
-        }
-
-        else if (currentTool == ToolType.Hand)
-        {
-            // open or close door
-        }
-
-        else
-        {
-            // do nothing
-        }
     }
 
     public void FixElevator()
     {
-        if (isBroken)
-        {
-            fixMeter.value += fixMeter.maxValue / fixTapsRequired;
-            Debug.Log("Fix meter: " + fixMeter.value);
-            fixMeter.gameObject.SetActive(true);
+       fixMeter.value += fixMeter.maxValue / fixTapsRequired;
+       Debug.Log("Fix meter: " + fixMeter.value);
+       fixMeter.gameObject.SetActive(true);
 
-            if (fixMeter.value >= 1f)
-            {
-                isBroken = false;
-                isActive = true;
-                fixMeter.gameObject.SetActive(false);
-                brokenSign.gameObject.SetActive(false);
+       if (fixMeter.value >= 1f)
+       {
+            isBroken = false;
+            isActive = true;
+            fixMeter.gameObject.SetActive(false);
+            brokenSign.gameObject.SetActive(false);
 
-                if (!isMoving)
-                    elevatorDoorAnim.SetTrigger("doorOpening");
-            }
-        }
+            if (!isMoving)
+                elevatorDoorAnim.SetTrigger("doorOpening");
+       }
     }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (GameManager.instance.currentTool != ToolType.Sponge)
+            return;
+
+        isScrubbing = true;
+
+        Debug.Log("Scrubbing Started");
+    }
+
+    public void OnDrag(PointerEventData eventData)
+    {
+        if (!isScrubbing)
+            return;
+
+        if (GameManager.instance.currentTool != ToolType.Sponge)
+            return;
+
+        dirtyMeter.value -= cleanRate * Time.deltaTime;
+        dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (!isScrubbing)
+            return;
+
+        isScrubbing = false;
+    }
+
+    public void AddDirtiness(float amount)
+    {
+        dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value + amount);
+    }    
 }

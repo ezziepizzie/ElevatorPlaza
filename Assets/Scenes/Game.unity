@@ -1145,6 +1145,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2149251548159302427, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2263773127284087577, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1219,6 +1223,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336224090949902393, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8662738099431980556, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1334,6 +1342,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2149251548159302427, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2263773127284087577, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1408,6 +1420,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336224090949902393, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8662738099431980556, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1756,6 +1772,8 @@ MonoBehaviour:
   - {fileID: 1882568092}
   minBreakTime: 15
   maxBreakTime: 25
+  minDirtyTime: 10
+  maxDirtyTime: 20
   currentTool: 0
 --- !u!114 &1882568092 stripped
 MonoBehaviour:
@@ -1860,6 +1878,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2149251548159302427, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2263773127284087577, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0
@@ -1934,6 +1956,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5336224090949902393, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_FillAmount
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8662738099431980556, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -2033,6 +2059,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2149251548159302427, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3123278751431844911, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_Name
       value: Elevator
@@ -2056,6 +2086,10 @@ PrefabInstance:
     - target: {fileID: 7326850718411949947, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
       propertyPath: m_AnchoredPosition.x
       value: 177
+      objectReference: {fileID: 0}
+    - target: {fileID: 8662738099431980556, guid: 6cace47480320fa4fa47d020040c13ac, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

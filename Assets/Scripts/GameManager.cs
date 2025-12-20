@@ -43,6 +43,11 @@ public class GameManager : MonoBehaviour
     public float maxBreakTime = 25f;
     private float breakdownTimer;
 
+    [Header("Cleaning Settings")]
+    public float minDirtyTime = 5f;
+    public float maxDirtyTime = 15f;
+    private float dirtyTimer;
+
     [Header("Player Tool")]
     public ToolType currentTool = ToolType.Hand;
 
@@ -108,6 +113,7 @@ public class GameManager : MonoBehaviour
             passengerSpawner.StartSpawning();
             SwitchToolCursor();
             breakdownTimer = GetRandomBreakTime();
+            dirtyTimer = GetRandomDirtyTime();
         }
 
         // to add dirtyness
@@ -198,6 +204,7 @@ public class GameManager : MonoBehaviour
         }
 
         HandleBreakdowns();
+        HandleDirtyElevators();
 
         // RUSH HOUR SECTION
         float rushStart = dayDuration * rushHourStartPercent;
@@ -234,6 +241,20 @@ public class GameManager : MonoBehaviour
         {
             TryBreakRandomElevator();
             breakdownTimer = GetRandomBreakTime();
+        }
+    }
+
+    private void HandleDirtyElevators()
+    {
+        if (state != GameState.Active && state != GameState.RushHour)
+            return;
+
+        dirtyTimer -= Time.deltaTime;
+
+        if (dirtyTimer <= 0f)
+        {
+            TryDirtyRandomElevator();
+            dirtyTimer = GetRandomDirtyTime();
         }
     }
 
@@ -286,6 +307,11 @@ public class GameManager : MonoBehaviour
         return UnityEngine.Random.Range(minBreakTime, maxBreakTime);
     }
 
+    private float GetRandomDirtyTime()
+    {
+        return UnityEngine.Random.Range(minDirtyTime, maxDirtyTime);
+    }
+
     // attempt to break a random elevator
     private void TryBreakRandomElevator()
     {
@@ -307,6 +333,17 @@ public class GameManager : MonoBehaviour
         chosen.BreakElevator();
 
         Debug.Log("[BREAKDOWN] Elevator broke!");
+    }
+
+    private void TryDirtyRandomElevator()
+    {
+        if (elevators.Count == 0)
+            return;
+
+        Elevator chosen = elevators[UnityEngine.Random.Range(0, elevators.Count)];
+
+        if (chosen.dirtyMeter.value < 1f)
+            chosen.AddDirtiness(0.25f);
     }
 
     private void ScrollTools()
