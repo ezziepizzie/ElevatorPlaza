@@ -426,7 +426,7 @@ GameObject:
   - component: {fileID: 202811425341563042}
   - component: {fileID: 9222755244253564482}
   m_Layer: 5
-  m_Name: Text (TMP)
+  m_Name: Dirty Meter Text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -634,6 +634,8 @@ MonoBehaviour:
   isScrubbing: 0
   dirtyMeter: {fileID: 4662497048533522362}
   cleanRate: 0.25
+  cleanHoldTime: 0.15
+  moveThreshold: 10
   isActive: 1
   isMoving: 0
   currentCapacity: 0
@@ -1019,7 +1021,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -300}
+  m_AnchoredPosition: {x: 0, y: -250}
   m_SizeDelta: {x: 240, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &4662497048533522362
@@ -1061,7 +1063,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 0}
   m_FillRect: {fileID: 8662738099431980556}
   m_HandleRect: {fileID: 0}
@@ -1244,7 +1246,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: -260}
+  m_AnchoredPosition: {x: 177, y: 175}
   m_SizeDelta: {x: 150, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6009159708829940967

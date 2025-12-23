@@ -111,7 +111,7 @@ public class GameManager : MonoBehaviour
         {
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
-            SwitchToolCursor();
+            SwitchToolCursor(GameManager.instance.currentTool);
             breakdownTimer = GetRandomBreakTime();
             dirtyTimer = GetRandomDirtyTime();
         }
@@ -182,8 +182,8 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().name == "Game" && state != GameState.Paused)
-            ScrollTools();
+        //if (SceneManager.GetActiveScene().name == "Game" && state != GameState.Paused)
+           // ScrollTools();
 
         // handle all the timers
         if (state == GameState.Active || state == GameState.RushHour)
@@ -346,7 +346,7 @@ public class GameManager : MonoBehaviour
             chosen.AddDirtiness(0.25f);
     }
 
-    private void ScrollTools()
+    /*private void ScrollTools()
     {
         float scroll = Input.mouseScrollDelta.y;
 
@@ -364,13 +364,15 @@ public class GameManager : MonoBehaviour
 
         currentTool = (ToolType)currentIndex;
 
-        SwitchToolCursor();
+        SwitchToolCursor(GameManager.instance.currentTool);
 
         //Debug.Log("Current Tool: " + currentTool);
-    }
+    }*/
 
-    public void SwitchToolCursor()
+    public void SwitchToolCursor(ToolType toolType)
     {
+        currentTool = toolType;
+
         switch (currentTool)
         {
             case ToolType.Hand:

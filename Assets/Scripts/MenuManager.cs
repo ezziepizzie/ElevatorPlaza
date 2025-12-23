@@ -48,7 +48,7 @@ public class MenuManager : MonoBehaviour
         GameManager.instance.UpdateGameState(GameState.Active);
         isOpen = false;
 
-        GameManager.instance.SwitchToolCursor();
+        GameManager.instance.SwitchToolCursor(GameManager.instance.currentTool);
     }
 
     public void ForceCloseState()

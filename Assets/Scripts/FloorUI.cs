@@ -9,7 +9,6 @@ public class FloorUI : MonoBehaviour
     public void SetText(Passenger passenger)
     {
         nameText.text = passenger.passengerType.passengerName;
-        //floorText.text = passenger.targetFloor + "F";
 
         if (passenger.targetFloors.Count == 1)
         {

@@ -48,7 +48,7 @@ public class SettingsMenuUI : MonoBehaviour
 
         if(SceneManager.GetActiveScene().name == "Game")
         {
-            GameManager.instance.SwitchToolCursor();
+            GameManager.instance.SwitchToolCursor(GameManager.instance.currentTool);
         }
 
         FindFirstObjectByType<MenuManager>().ForceCloseState();

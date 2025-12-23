@@ -7,12 +7,13 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
+public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
 {
     public PassengerSpawner spawner;
     [SerializeField] private TextMeshProUGUI capacityText;
     [SerializeField] private TextMeshProUGUI floorText;
     [SerializeField] private Animator elevatorDoorAnim;
+
 
     [Header("Floor List UI")]
     public Transform floorListGridParent;
@@ -34,6 +35,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
     public Slider dirtyMeter;
     public bool isDirty => dirtyMeter.value > 0f;
     [SerializeField] private float cleanRate = 0.25f;
+    [SerializeField] private float cleanHoldTime = 0.15f;
+    [SerializeField] private float moveThreshold = 10f;
 
     [HideInInspector] public bool isActive = true;
     [HideInInspector] public bool isMoving = false;
@@ -41,6 +44,12 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
     [HideInInspector] public int currentFloor = 0;
     [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
 
+    private float pointerDownTime;
+    private bool pointerMoved;
+    private Vector2 pointerDownPos;
+
+    private float hammerResetDelay = 1f;
+    private Coroutine hammerResetCoroutine;
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -84,7 +93,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
         draggable.transform.SetParent(null);
 
         passengerList.Add(passenger);
-        //passengerList = passengerList.OrderBy(p => p.targetFloor).ToList();
         passengerList = passengerList.OrderBy(p => p.targetFloors.Min()).ToList();
 
         spawner.RemovePassenger(droppedPassenger);
@@ -151,7 +159,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
             currentFloor++;
             floorText.text = currentFloor + "F";
 
-            //var passengersToUnload = passengerList.Where(p => p.targetFloor == currentFloor).ToList();
             var passengersToUnload = passengerList.Where(p => p.targetFloors.Contains(currentFloor)).ToList();
 
             foreach (Passenger passenger in passengersToUnload)
@@ -162,13 +169,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
                 }
 
                 yield return new WaitForSeconds(unloadingTime);
-
-                /*currentCapacity -= passenger.passengerType.passengerAmount;
-                capacityText.text = currentCapacity + " / " + MaxCapacity;
-
-                passengerList.Remove(passenger);
-                Destroy(passenger.gameObject);
-                UpdateFloorTextUI();*/
 
                 passenger.targetFloors.Remove(currentFloor);
                 
@@ -237,23 +237,24 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
         }
     }
 
-    public void OnPointerClick(PointerEventData eventData)
-    {
-        if (GameManager.instance.currentTool != ToolType.Hammer)
-            return;
-
-        if (isBroken)
-            FixElevator();
-    }
-
     public void FixElevator()
     {
-       fixMeter.value += fixMeter.maxValue / fixTapsRequired;
-       Debug.Log("Fix meter: " + fixMeter.value);
-       fixMeter.gameObject.SetActive(true);
 
-       if (fixMeter.value >= 1f)
-       {
+        GameManager.instance.SwitchToolCursor(ToolType.Hammer);
+
+        fixMeter.value += fixMeter.maxValue / fixTapsRequired;
+        Debug.Log("Fix meter: " + fixMeter.value);
+        fixMeter.gameObject.SetActive(true);
+
+        // Restart reset timer
+        if (hammerResetCoroutine != null)
+            StopCoroutine(hammerResetCoroutine);
+
+        hammerResetCoroutine = StartCoroutine(ResetHammerAfterDelay());
+
+
+        if (fixMeter.value >= 1f)
+        {
             isBroken = false;
             isActive = true;
             fixMeter.gameObject.SetActive(false);
@@ -261,41 +262,63 @@ public class Elevator : MonoBehaviour, IDropHandler, IPointerClickHandler, IDrag
 
             if (!isMoving)
                 elevatorDoorAnim.SetTrigger("doorOpening");
-       }
+        }
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        if (GameManager.instance.currentTool != ToolType.Sponge)
-            return;
+        pointerDownTime = Time.time;
+        pointerDownPos = eventData.position;
+        pointerMoved = false;
 
-        isScrubbing = true;
-
-        Debug.Log("Scrubbing Started");
+        if(isDirty)
+            isScrubbing = true;
     }
 
     public void OnDrag(PointerEventData eventData)
     {
-        if (!isScrubbing)
+        if (!isDirty)
             return;
 
-        if (GameManager.instance.currentTool != ToolType.Sponge)
-            return;
+        if(Vector2.Distance(pointerDownPos, eventData.position) > moveThreshold)
+            pointerMoved = true;
 
-        dirtyMeter.value -= cleanRate * Time.deltaTime;
-        dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
+        if(GameManager.instance.currentTool != ToolType.Sponge)
+            GameManager.instance.SwitchToolCursor(ToolType.Sponge);
+
+
+        if (Time.time - pointerDownTime >= cleanHoldTime)
+        {
+            dirtyMeter.value -= cleanRate * Time.deltaTime;
+            dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
+        }
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (!isScrubbing)
+        if (GameManager.instance.currentTool == ToolType.Sponge)
+            GameManager.instance.SwitchToolCursor(ToolType.Hand);
+
+
+        if (!isBroken)
             return;
 
-        isScrubbing = false;
+        if (pointerMoved)
+            return;
+
+        if (Time.time - pointerDownTime < cleanHoldTime)
+            FixElevator();
     }
 
     public void AddDirtiness(float amount)
     {
         dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value + amount);
-    }    
+    }
+
+    private IEnumerator ResetHammerAfterDelay()
+    {
+        yield return new WaitForSeconds(hammerResetDelay);
+        GameManager.instance.SwitchToolCursor(ToolType.Hand);
+    }
 }
