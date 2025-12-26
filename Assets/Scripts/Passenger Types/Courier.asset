@@ -24,3 +24,6 @@ MonoBehaviour:
   isCourier: 1
   minDeliveryFloors: 2
   maxDeliveryFloors: 2
+  isSpecialType: 1
+  minPassengersBeforeSpawn: 3
+  maxPassengersBeforeSpawn: 7

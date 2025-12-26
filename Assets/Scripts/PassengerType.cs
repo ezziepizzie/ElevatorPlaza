@@ -17,7 +17,12 @@ public class PassengerType : ScriptableObject
     public bool isVIP;
     public bool isKid;
     public bool isCourier;
+
     public int minDeliveryFloors;
     public int maxDeliveryFloors;
-    //public int courierFloorsCount;
+
+    [Header("Spawn Control")]
+    public bool isSpecialType;
+    public int minPassengersBeforeSpawn = 3;
+    public int maxPassengersBeforeSpawn = 8;
 }

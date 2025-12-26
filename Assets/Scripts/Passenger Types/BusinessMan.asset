@@ -21,3 +21,9 @@ MonoBehaviour:
   maxFloor: 10
   isVIP: 0
   isKid: 0
+  isCourier: 0
+  minDeliveryFloors: 0
+  maxDeliveryFloors: 0
+  isSpecialType: 0
+  minPassengersBeforeSpawn: 0
+  maxPassengersBeforeSpawn: 0
