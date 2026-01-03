@@ -31,11 +31,13 @@ public class GameManager : MonoBehaviour
     private bool rushHourTriggered = false;
 
     [Header("Score")]
+    public int currentDay = 1;
     public int currentScore = 0;
-    public int targetScore = 100; // changer per level, log curve? or expo?
+    public int targetScore = 100;
 
-    [Header("Level")]
-    public int currentLevel = 1;
+    [SerializeField] private int baseTargetScore = 100;
+    [SerializeField] private int targetScoreIncreasePerDay = 50;
+    [SerializeField] private int maxTargetScore = 1000; // max score
 
     [Header("Elevators")]
     public List<Elevator> elevators = new List<Elevator>();
@@ -50,6 +52,15 @@ public class GameManager : MonoBehaviour
 
     [Header("Player Tool")]
     public ToolType currentTool = ToolType.Hand;
+
+    [Header("Score UI")]
+    public TextMeshProUGUI lblRequiredScore;
+    public TextMeshProUGUI lblCurrentScore;
+
+    [Header("Game End UI")]
+    public GameObject GameUI;
+    public GameObject btnRetry;
+    public GameObject btnNextLevel;
 
     private void Awake()
     {
@@ -114,6 +125,8 @@ public class GameManager : MonoBehaviour
             SwitchToolCursor(GameManager.instance.currentTool);
             breakdownTimer = GetRandomBreakTime();
             dirtyTimer = GetRandomDirtyTime();
+            CalculateTargetScore();
+            UpdateScoreUI();
         }
 
         // to add dirtyness
@@ -125,6 +138,8 @@ public class GameManager : MonoBehaviour
     {
         Debug.Log("[STATE] Active");
         Time.timeScale = 1;
+
+        GameUI.SetActive(false);
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
@@ -159,17 +174,27 @@ public class GameManager : MonoBehaviour
             UpdateGameState(GameState.DayWin);
         else
             UpdateGameState(GameState.DayLose);
+
+        GameUI.SetActive(true);
     }
 
     private void HandleDayWin()
     {
         Debug.Log("[STATE] Day Win");
-        currentLevel++;
+        currentDay++;
+
+        // add ui
+        btnNextLevel.SetActive(true);
+        btnRetry.SetActive(false);
     }
 
     private void HandleDayLose()
     {
         Debug.Log("[STATE] Day Lose");
+
+        // add ui
+        btnNextLevel.SetActive(false);
+        btnRetry.SetActive(true);
     }
 
     private void HandleCleaning()
@@ -258,12 +283,19 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    // score for future use
     public void AddScore(int amount)
     {
         currentScore += amount;
-        Debug.Log("Score +" + amount + " | Total = " + currentScore);
+        currentScore = Mathf.Max(0, currentScore);
+        UpdateScoreUI();
     }
+
+    void UpdateScoreUI()
+    {
+        if (currentScore != null)
+            lblCurrentScore.text = currentScore.ToString();
+    }
+
 
     public void AddCleaningScore(int amount)
     {
@@ -390,6 +422,45 @@ public class GameManager : MonoBehaviour
                 CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
                 break;
         }
+    }
+
+    public void AddPassengerScore(Passenger passenger)
+    {
+        float patienceRatio = passenger.currentPatienceLevel / passenger.maxPatienceLevel;
+
+        int baseScore = passenger.passengerType.baseScore;
+        int finalScore = Mathf.RoundToInt(baseScore * patienceRatio);
+
+        AddScore(finalScore);
+    }
+
+    public void LosePassengerScore(Passenger passenger)
+    {
+        AddScore(-passenger.passengerType.patiencePenalty);
+    }
+
+    void CalculateTargetScore()
+    {
+        int calculatedScore = baseTargetScore + (currentDay - 1) * targetScoreIncreasePerDay;
+        targetScore = Mathf.Min(calculatedScore, maxTargetScore);
+
+        UpdateRequiredScoreUI();
+    }
+
+    void UpdateRequiredScoreUI()
+    {
+        if (lblRequiredScore != null)
+            lblRequiredScore.text = targetScore.ToString();
+    }
+
+    public void StartNextDay()
+    {
+        UpdateGameState(GameState.Loading);
+    }
+
+    public void RestartDay()
+    {
+        UpdateGameState(GameState.Loading);
     }
 }
 

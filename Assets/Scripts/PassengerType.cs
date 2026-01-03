@@ -25,4 +25,9 @@ public class PassengerType : ScriptableObject
     public bool isSpecialType;
     public int minPassengersBeforeSpawn = 3;
     public int maxPassengersBeforeSpawn = 8;
+
+    [Header("Scoring")]
+    public int baseScore = 10;
+    public int patiencePenalty = 5;
+
 }

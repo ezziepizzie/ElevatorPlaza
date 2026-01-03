@@ -96,12 +96,16 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         passengerList = passengerList.OrderBy(p => p.targetFloors.Min()).ToList();
 
         spawner.RemovePassenger(droppedPassenger);
+        
+        // add score
+        GameManager.instance.AddPassengerScore(passenger);
 
         currentCapacity += passenger.passengerType.passengerAmount;
 
         capacityText.text = currentCapacity + " / " + MaxCapacity;
 
         UpdateFloorTextUI();
+
     }
 
     void Start()
@@ -257,6 +261,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         {
             isBroken = false;
             isActive = true;
+
+            GameManager.instance.AddRepairScore(10);
+
             fixMeter.gameObject.SetActive(false);
             brokenSign.gameObject.SetActive(false);
 
@@ -309,6 +316,14 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
         if (Time.time - pointerDownTime < cleanHoldTime)
             FixElevator();
+
+        if (dirtyMeter.value <= 0f && isDirty)
+        {
+            dirtyMeter.value = 0f;
+            isScrubbing = false;
+
+            GameManager.instance.AddCleaningScore(5);
+        }
     }
 
     public void AddDirtiness(float amount)

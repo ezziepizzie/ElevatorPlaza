@@ -8,6 +8,8 @@ public class VolumeSetttings : MonoBehaviour
     [SerializeField] private AudioMixer myMixer;
     [SerializeField] private Slider musicSlider;
     [SerializeField] private Slider SFXSlider;
+    private float tempMusic;
+    private float tempVFX;
 
     private void Start()
     {

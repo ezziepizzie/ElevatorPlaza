@@ -51,8 +51,10 @@ public class Passenger : MonoBehaviour
 
         if (currentPatienceLevel <= 0)
         {
+            GameManager.instance.LosePassengerScore(this);
             spawner.RemovePassenger(gameObject);
         }
+
     }
 
     public void UpdatePatienceMeterColor()
