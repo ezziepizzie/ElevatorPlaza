@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -32,6 +33,8 @@ public class GameManager : MonoBehaviour
 
     [Header("Score")]
     public int currentDay = 1;
+    public TextMeshProUGUI currentDayText;
+    public TextMeshProUGUI scoreText;
     public int currentScore = 0;
     public int targetScore = 100;
 
@@ -120,6 +123,7 @@ public class GameManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
+            currentDayText.text = "Current Day : " + currentDay.ToString();
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
             SwitchToolCursor(GameManager.instance.currentTool);
@@ -127,6 +131,8 @@ public class GameManager : MonoBehaviour
             dirtyTimer = GetRandomDirtyTime();
             CalculateTargetScore();
             UpdateScoreUI();
+
+            scoreText.gameObject.SetActive(false);
         }
 
         // to add dirtyness
@@ -143,6 +149,7 @@ public class GameManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
+            passengerSpawner.InitializeCounters();
             passengerSpawner.StartSpawning();
             passengerSpawner.SetRushHour(false);
         }
@@ -424,7 +431,7 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    public void AddPassengerScore(Passenger passenger)
+    public int CalculatePassengerScore(Passenger passenger)
     {
         float patienceRatio = passenger.currentPatienceLevel / passenger.maxPatienceLevel;
 
@@ -432,11 +439,14 @@ public class GameManager : MonoBehaviour
         int finalScore = Mathf.RoundToInt(baseScore * patienceRatio);
 
         AddScore(finalScore);
+
+        return finalScore;
     }
 
     public void LosePassengerScore(Passenger passenger)
     {
         AddScore(-passenger.passengerType.patiencePenalty);
+        DisplayScore(passenger.passengerType.patiencePenalty);
     }
 
     void CalculateTargetScore()
@@ -455,12 +465,72 @@ public class GameManager : MonoBehaviour
 
     public void StartNextDay()
     {
+        dayTimerText.text = startHour + " AM";
+
+        foreach (Elevator e in elevators)
+        {
+            e.ResetElevator();
+        }
+
+        passengerSpawner.ResetSpawner();
+
         UpdateGameState(GameState.Loading);
     }
 
     public void RestartDay()
     {
+        dayTimerText.text = startHour + " AM";
+
+        foreach (Elevator e in elevators)
+        {
+            e.ResetElevator();
+        }
+
+        passengerSpawner.ResetSpawner();
+
         UpdateGameState(GameState.Loading);
+    }
+
+    public void DisplayScore(int score)
+    {
+        scoreText.text = "- " + score;
+        scoreText.gameObject.SetActive(true);
+
+        //StopCoroutine(ScoreFadeOut());
+        StartCoroutine(ScoreFadeOut());
+    }
+
+    private IEnumerator ScoreFadeOut()
+    {
+        float duration = 1f;
+        float elapsed = 0f;
+
+        Color originalColor = scoreText.color;
+        scoreText.color = new Color(
+            originalColor.r,
+            originalColor.g,
+            originalColor.b,
+            1f
+        );
+
+        yield return new WaitForSeconds(0.3f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+
+            scoreText.color = new Color(
+                originalColor.r,
+                originalColor.g,
+                originalColor.b,
+                alpha
+            );
+
+            yield return null;
+        }
+
+        scoreText.gameObject.SetActive(false);
     }
 }
 

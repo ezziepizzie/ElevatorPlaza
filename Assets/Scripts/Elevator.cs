@@ -13,6 +13,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
     [SerializeField] private TextMeshProUGUI capacityText;
     [SerializeField] private TextMeshProUGUI floorText;
     [SerializeField] private Animator elevatorDoorAnim;
+    public int passengerScore;
+    [SerializeField] private TextMeshProUGUI scoreText;
 
 
     [Header("Floor List UI")]
@@ -48,7 +50,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
     private bool pointerMoved;
     private Vector2 pointerDownPos;
 
-    private float hammerResetDelay = 1f;
+    private float hammerResetDelay = .5f;
     private Coroutine hammerResetCoroutine;
 
     public void OnDrop(PointerEventData eventData)
@@ -98,7 +100,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         spawner.RemovePassenger(droppedPassenger);
         
         // add score
-        GameManager.instance.AddPassengerScore(passenger);
+        //passengerScore = GameManager.instance.CalculatePassengerScore(passenger);
+
+        //DisplayPassengerScore(passengerScore);
 
         currentCapacity += passenger.passengerType.passengerAmount;
 
@@ -114,6 +118,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
         fixMeter.gameObject.SetActive(false);
         brokenSign.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(false);
 
         dirtyMeter.value = 0f;
     }
@@ -184,6 +189,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
                 currentCapacity -= passenger.passengerType.passengerAmount;
                 capacityText.text = currentCapacity + " / " + MaxCapacity;
+
+                passengerScore = GameManager.instance.CalculatePassengerScore(passenger);
+
+                DisplayScore(passengerScore);
+
                 passengerList.Remove(passenger);
                 Destroy(passenger.gameObject);
                 UpdateFloorTextUI();
@@ -263,6 +273,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             isActive = true;
 
             GameManager.instance.AddRepairScore(10);
+            DisplayScore(10);
 
             fixMeter.gameObject.SetActive(false);
             brokenSign.gameObject.SetActive(false);
@@ -300,6 +311,15 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
         }
 
+        if (dirtyMeter.value <= 0f)
+        {
+
+            dirtyMeter.value = 0f;
+
+            GameManager.instance.AddCleaningScore(5);
+            DisplayScore(5);
+        }
+
     }
 
     public void OnPointerUp(PointerEventData eventData)
@@ -307,6 +327,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (GameManager.instance.currentTool == ToolType.Sponge)
             GameManager.instance.SwitchToolCursor(ToolType.Hand);
 
+        isScrubbing = false;
 
         if (!isBroken)
             return;
@@ -316,14 +337,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
         if (Time.time - pointerDownTime < cleanHoldTime)
             FixElevator();
-
-        if (dirtyMeter.value <= 0f && isDirty)
-        {
-            dirtyMeter.value = 0f;
-            isScrubbing = false;
-
-            GameManager.instance.AddCleaningScore(5);
-        }
     }
 
     public void AddDirtiness(float amount)
@@ -336,4 +349,68 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         yield return new WaitForSeconds(hammerResetDelay);
         GameManager.instance.SwitchToolCursor(ToolType.Hand);
     }
+
+    public void ResetElevator()
+    {
+        StopAllCoroutines();
+        isActive = true;
+        isMoving = false;
+        isBroken = false;
+        currentCapacity = 0;
+        currentFloor = 0;
+        passengerList.Clear();
+        capacityText.text = currentCapacity + " / " + MaxCapacity;
+        floorText.text = "GF";
+        fixMeter.gameObject.SetActive(false);
+        brokenSign.gameObject.SetActive(false);
+        scoreText.gameObject.SetActive(false);
+        dirtyMeter.value = 0f;
+        UpdateFloorTextUI();
+        elevatorDoorAnim.ResetTrigger("doorClosing");
+        elevatorDoorAnim.ResetTrigger("doorOpening");
+        elevatorDoorAnim.Play("DoorOpening", 0, 0f);
+    }
+
+    public void DisplayScore(int score)
+    {
+        scoreText.text = "+ " + score;
+        scoreText.gameObject.SetActive(true);
+
+        //StopCoroutine(ScoreFadeOut());
+        StartCoroutine(ScoreFadeOut());
+    }
+
+    private IEnumerator ScoreFadeOut()
+    {
+        float duration = 1f;
+        float elapsed = 0f;
+
+        Color originalColor = scoreText.color;
+        scoreText.color = new Color(
+            originalColor.r,
+            originalColor.g,
+            originalColor.b,
+            1f
+        );
+
+        yield return new WaitForSeconds(0.3f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+
+            scoreText.color = new Color(
+                originalColor.r,
+                originalColor.g,
+                originalColor.b,
+                alpha
+            );
+
+            yield return null;
+        }
+
+        scoreText.gameObject.SetActive(false);
+    }
 }
+

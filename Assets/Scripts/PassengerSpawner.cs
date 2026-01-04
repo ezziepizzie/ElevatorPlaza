@@ -26,7 +26,7 @@ public class PassengerSpawner : MonoBehaviour
         StartSpawning();
     }
 
-    void InitializeCounters()
+    public void InitializeCounters()
     {
         foreach (PassengerType type in passengerTypes)
         {
@@ -151,5 +151,15 @@ public class PassengerSpawner : MonoBehaviour
     {
         spawnRateMultiplier = active ? 2f : 1f;
         StartSpawning();
+    }
+
+    public void ResetSpawner()
+    {
+        StopSpawning();
+        foreach (GameObject passenger in activePassengers)
+        {
+            Destroy(passenger);
+        }
+        activePassengers.Clear();
     }
 }
