@@ -242,7 +242,10 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (isBroken == false)
         {
             isBroken = true;
-            isActive = false;
+
+            if (isActive)
+                isActive = false;
+
             brokenSign.gameObject.SetActive(true);
             fixMeter.value = 0;
 
@@ -270,7 +273,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (fixMeter.value >= 1f)
         {
             isBroken = false;
-            isActive = true;
 
             GameManager.instance.AddRepairScore(10);
             DisplayScore(10);
@@ -279,7 +281,10 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             brokenSign.gameObject.SetActive(false);
 
             if (!isMoving)
+            {
+                isActive = true;
                 elevatorDoorAnim.SetTrigger("doorOpening");
+            }
         }
     }
 

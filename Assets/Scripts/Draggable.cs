@@ -13,11 +13,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
     [HideInInspector] public RectTransform passengerSpriteTransform;
     public void OnBeginDrag(PointerEventData eventData)
     {
-        ToolType currentTool = GameManager.instance.currentTool;
-
-        if (currentTool != ToolType.Hand)
-            return;
-
         //Debug.Log("Drag started");
         passengerSprite = Instantiate(passengerSpritePrefab, transform.root);
         passengerSpriteTransform = passengerSprite.GetComponent<RectTransform>();
@@ -39,11 +34,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         //Debug.Log("Dragging");
         //transform.position = eventData.position;
 
-        ToolType currentTool = GameManager.instance.currentTool;
-
-        if (currentTool != ToolType.Hand)
-            return;
-
         passengerSpriteTransform.position = eventData.position;
     }
 
@@ -52,11 +42,6 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         //Debug.Log("Drag ended");
         //transform.SetParent(parentAfterDrag);
         //image.raycastTarget = true;
-
-        ToolType currentTool = GameManager.instance.currentTool;
-
-        if (currentTool != ToolType.Hand)
-            return;
 
         passengerSpriteTransform.SetParent(parentAfterDrag);
         passengerSprite.GetComponent<Image>().raycastTarget = true;
