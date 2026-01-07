@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
             currentDayText.text = "Current Day : " + currentDay.ToString();
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
-            SwitchToolCursor(GameManager.instance.currentTool);
+            SwitchToolCursor(ToolType.Hand);
             breakdownTimer = GetRandomBreakTime();
             dirtyTimer = GetRandomDirtyTime();
             CalculateTargetScore();

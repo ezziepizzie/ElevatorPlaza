@@ -13,6 +13,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
     [SerializeField] private TextMeshProUGUI capacityText;
     [SerializeField] private TextMeshProUGUI floorText;
     [SerializeField] private Animator elevatorDoorAnim;
+    [SerializeField] private Animator elevatorFloorAnim;
     public int passengerScore;
     [SerializeField] private TextMeshProUGUI scoreText;
 
@@ -42,6 +43,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     [HideInInspector] public bool isActive = true;
     [HideInInspector] public bool isMoving = false;
+    [HideInInspector] private bool isMovingUp = false;
+    [HideInInspector] private bool isMovingDown = false;
     [HideInInspector] public int currentCapacity;
     [HideInInspector] public int currentFloor = 0;
     [HideInInspector] public List<Passenger> passengerList = new List<Passenger>();
@@ -152,7 +155,10 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
     {
         isActive = false;
         isMoving = true;
+        isMovingDown = false;
+        isMovingUp = true;
 
+        elevatorFloorAnim.SetTrigger("floorUp");
         elevatorDoorAnim.SetTrigger("doorClosing");
         yield return new WaitForSeconds(0.5f);
 
@@ -210,6 +216,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     public IEnumerator MoveElevatorDown()
     {
+        isMovingDown = true;
+        isMovingUp = false;
+
+        elevatorFloorAnim.SetTrigger("floorDown");
+
         while (currentFloor != 0)
         {
             yield return new WaitForSeconds(travelTime);
@@ -230,11 +241,17 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         }
 
         if(!isBroken)
+        {
             elevatorDoorAnim.SetTrigger("doorOpening");
+            elevatorFloorAnim.SetTrigger("floorIdle");
+        }
 
         yield return new WaitForSeconds(0.5f);
+
         isActive = true;
         isMoving = false;
+        isMovingDown = false;
+        isMovingUp = false;
     }
 
     public void BreakElevator()
@@ -242,6 +259,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (isBroken == false)
         {
             isBroken = true;
+            elevatorFloorAnim.SetTrigger("floorBroken");
 
             if (isActive)
                 isActive = false;
@@ -256,7 +274,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     public void FixElevator()
     {
-
         GameManager.instance.SwitchToolCursor(ToolType.Hammer);
 
         fixMeter.value += fixMeter.maxValue / fixTapsRequired;
@@ -284,6 +301,17 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             {
                 isActive = true;
                 elevatorDoorAnim.SetTrigger("doorOpening");
+                elevatorFloorAnim.SetTrigger("floorIdle");
+            }
+            
+            if (isMovingUp)
+            {
+                elevatorFloorAnim.SetTrigger("floorUp");
+            }
+            
+            else if (isMovingDown)
+            {
+                elevatorFloorAnim.SetTrigger("floorDown");
             }
         }
     }
@@ -371,9 +399,15 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         scoreText.gameObject.SetActive(false);
         dirtyMeter.value = 0f;
         UpdateFloorTextUI();
-        elevatorDoorAnim.ResetTrigger("doorClosing");
-        elevatorDoorAnim.ResetTrigger("doorOpening");
+
+        elevatorFloorAnim.Rebind();
+        elevatorFloorAnim.Update(0f);
+
+        elevatorDoorAnim.Rebind();
+        elevatorDoorAnim.Update(0f);
+
         elevatorDoorAnim.Play("DoorOpening", 0, 0f);
+        elevatorFloorAnim.Play("floorIdle", 0, 0f);
     }
 
     public void DisplayScore(int score)

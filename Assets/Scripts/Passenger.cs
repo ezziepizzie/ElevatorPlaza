@@ -16,6 +16,7 @@ public class Passenger : MonoBehaviour
 
     public Slider patienceMeter;
     public TextMeshProUGUI floorText;
+    private Draggable draggable;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -23,6 +24,8 @@ public class Passenger : MonoBehaviour
         passengerImage.sprite = passengerType.passengerIcon;
         maxPatienceLevel = passengerType.patienceLevel;
         currentPatienceLevel = passengerType.patienceLevel;
+        draggable = GetComponent<Draggable>();
+
         /*targetFloor = Random.Range(passengerType.minFloor, passengerType.maxFloor + 1); 
 
         if (passengerType.isKid)
@@ -53,6 +56,7 @@ public class Passenger : MonoBehaviour
         {
             GameManager.instance.LosePassengerScore(this);
             spawner.RemovePassenger(gameObject);
+            draggable.DestroySprite();
         }
 
     }
