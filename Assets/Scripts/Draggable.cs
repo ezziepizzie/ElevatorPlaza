@@ -6,11 +6,18 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
 {
     public Image image;
     public GameObject passengerSpritePrefab;
+    AudioManager audioManager;
     [HideInInspector] public Transform parentAfterDrag;
     [HideInInspector] public Passenger passenger;
 
     [HideInInspector] public GameObject passengerSprite;
     [HideInInspector] public RectTransform passengerSpriteTransform;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
+
     public void OnBeginDrag(PointerEventData eventData)
     {
         //Debug.Log("Drag started");
@@ -22,6 +29,8 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         passengerSprite.GetComponent<Image>().raycastTarget = false;
 
         image.color = new Color(1, 1, 1, 0.4f);
+
+        audioManager.PlaySFX(audioManager.passengerDrag);
 
         /*parentAfterDrag = transform.parent;
         transform.SetParent(transform.root);

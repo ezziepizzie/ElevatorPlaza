@@ -10,7 +10,14 @@ public class AudioManager : MonoBehaviour
     [Header("Audio Clip")]
     public AudioClip backgroundMenu;
     public AudioClip backgroundGame;
-    public AudioClip elevetorButtonPress;
+    public AudioClip elevatorButtonPress;
+    public AudioClip elevatorDirtSplat;
+    public AudioClip elevatorCleaning;
+    public AudioClip elevatorCleanDing;
+    public AudioClip elevatorBreakdown;
+    public AudioClip elevatorFixing;
+    public AudioClip elevatorActive;
+    public AudioClip passengerDrag;
 
     private void Start()
     {
@@ -30,5 +37,20 @@ public class AudioManager : MonoBehaviour
     public void PlaySFX(AudioClip clip)
     {
         SFXSource.PlayOneShot(clip);
+    }
+    public void PlayLoopSFX(AudioClip clip)
+    {
+        if (SFXSource.clip == clip && SFXSource.isPlaying)
+            return; 
+
+        SFXSource.clip = clip;
+        SFXSource.loop = true;
+        SFXSource.Play();
+    }
+
+    public void StopLoopSFX()
+    {
+        SFXSource.loop = false;
+        SFXSource.Stop();
     }
 }

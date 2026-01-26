@@ -20,7 +20,7 @@ public class ElevatorButton : MonoBehaviour, IPointerClickHandler
             return;
 
         elevator.StartCoroutine("MoveElevatorUp");
-        audioManager.PlaySFX(audioManager.elevetorButtonPress);
+        audioManager.PlaySFX(audioManager.elevatorButtonPress);
         elevatorButtonAnim.SetTrigger("buttonClicked");
     }
 }

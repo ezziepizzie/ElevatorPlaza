@@ -16,6 +16,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
     [SerializeField] private Animator elevatorFloorAnim;
     public int passengerScore;
     [SerializeField] private TextMeshProUGUI scoreText;
+    AudioManager audioManager;
 
 
     [Header("Floor List UI")]
@@ -55,6 +56,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     private float hammerResetDelay = .5f;
     private Coroutine hammerResetCoroutine;
+
+    private void Awake()
+    {
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
+    }
 
     public void OnDrop(PointerEventData eventData)
     {
@@ -252,6 +258,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         isMoving = false;
         isMovingDown = false;
         isMovingUp = false;
+
+        audioManager.PlaySFX(audioManager.elevatorActive);
     }
 
     public void BreakElevator()
@@ -274,6 +282,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     public void FixElevator()
     {
+
         GameManager.instance.SwitchToolCursor(ToolType.Hammer);
 
         fixMeter.value += fixMeter.maxValue / fixTapsRequired;
@@ -285,6 +294,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             StopCoroutine(hammerResetCoroutine);
 
         hammerResetCoroutine = StartCoroutine(ResetHammerAfterDelay());
+
+        audioManager.PlaySFX(audioManager.elevatorFixing);
 
 
         if (fixMeter.value >= 1f)
@@ -302,6 +313,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
                 isActive = true;
                 elevatorDoorAnim.SetTrigger("doorOpening");
                 elevatorFloorAnim.SetTrigger("floorIdle");
+
+                audioManager.PlaySFX(audioManager.elevatorActive);
             }
             
             if (isMovingUp)
@@ -342,6 +355,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         {
             dirtyMeter.value -= cleanRate * Time.deltaTime;
             dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
+
+            audioManager.PlayLoopSFX(audioManager.elevatorCleaning);
         }
 
         if (dirtyMeter.value <= 0f)
@@ -351,6 +366,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
             GameManager.instance.AddCleaningScore(5);
             DisplayScore(5);
+            audioManager.StopLoopSFX();
+            audioManager.PlaySFX(audioManager.elevatorCleanDing);
         }
 
     }
@@ -360,7 +377,11 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (GameManager.instance.currentTool == ToolType.Sponge)
             GameManager.instance.SwitchToolCursor(ToolType.Hand);
 
-        isScrubbing = false;
+        if (isScrubbing)
+        {
+            isScrubbing = false;
+            audioManager.StopLoopSFX();
+        }
 
         if (!isBroken)
             return;

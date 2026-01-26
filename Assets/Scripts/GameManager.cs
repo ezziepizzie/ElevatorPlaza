@@ -14,6 +14,8 @@ public class GameManager : MonoBehaviour
 
     public static event Action<GameState> OnGameStateChange;
 
+    AudioManager audioManager;
+
     [Header("Spawning")]
     public PassengerSpawner passengerSpawner;
 
@@ -59,6 +61,7 @@ public class GameManager : MonoBehaviour
     [Header("Score UI")]
     public TextMeshProUGUI lblRequiredScore;
     public TextMeshProUGUI lblCurrentScore;
+    public TextMeshProUGUI scoreLabel;
 
     [Header("Game End UI")]
     public GameObject GameUI;
@@ -68,6 +71,7 @@ public class GameManager : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        audioManager = GameObject.FindGameObjectWithTag("Audio").GetComponent<AudioManager>();
     }
 
     private void Start()
@@ -123,7 +127,7 @@ public class GameManager : MonoBehaviour
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
-            currentDayText.text = "Current Day : " + currentDay.ToString();
+            currentDayText.text = currentDay.ToString();
             passengerSpawner.StopSpawning();
             passengerSpawner.StartSpawning();
             SwitchToolCursor(ToolType.Hand);
@@ -133,6 +137,7 @@ public class GameManager : MonoBehaviour
             UpdateScoreUI();
 
             scoreText.gameObject.SetActive(false);
+            audioManager.PlaySFX(audioManager.elevatorActive);
         }
 
         // to add dirtyness
@@ -176,6 +181,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[STATE] Day End");
         Time.timeScale = 0;
         passengerSpawner.StopSpawning();
+        audioManager.StopLoopSFX();
 
         if (currentScore >= targetScore)
             UpdateGameState(GameState.DayWin);
@@ -299,8 +305,12 @@ public class GameManager : MonoBehaviour
 
     void UpdateScoreUI()
     {
-        if (currentScore != null)
-            lblCurrentScore.text = currentScore.ToString();
+        //if (currentScore != null)
+        //    lblCurrentScore.text = currentScore.ToString();
+
+        if (scoreLabel != null)
+            scoreLabel.text = currentScore.ToString() + " / " + targetScore.ToString();
+
     }
 
 
@@ -371,6 +381,8 @@ public class GameManager : MonoBehaviour
         Elevator chosen = validElevators[UnityEngine.Random.Range(0, validElevators.Count)];
         chosen.BreakElevator();
 
+        audioManager.PlaySFX(audioManager.elevatorBreakdown);
+
         Debug.Log("[BREAKDOWN] Elevator broke!");
     }
 
@@ -382,7 +394,11 @@ public class GameManager : MonoBehaviour
         Elevator chosen = elevators[UnityEngine.Random.Range(0, elevators.Count)];
 
         if (chosen.dirtyMeter.value < 1f)
+        {
             chosen.AddDirtiness(0.25f);
+            audioManager.PlaySFX(audioManager.elevatorDirtSplat);
+        }
+            
     }
 
     /*private void ScrollTools()
@@ -454,14 +470,14 @@ public class GameManager : MonoBehaviour
         int calculatedScore = baseTargetScore + (currentDay - 1) * targetScoreIncreasePerDay;
         targetScore = Mathf.Min(calculatedScore, maxTargetScore);
 
-        UpdateRequiredScoreUI();
+        //UpdateRequiredScoreUI();
     }
 
-    void UpdateRequiredScoreUI()
-    {
-        if (lblRequiredScore != null)
-            lblRequiredScore.text = targetScore.ToString();
-    }
+    //void UpdateRequiredScoreUI()
+    //{
+    //    if (lblRequiredScore != null)
+    //        lblRequiredScore.text = targetScore.ToString();
+    //}
 
     public void StartNextDay()
     {
