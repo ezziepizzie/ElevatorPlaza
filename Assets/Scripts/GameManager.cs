@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[STATE] Active");
         Time.timeScale = 1;
 
-        GameUI.SetActive(false);
+        //GameUI.SetActive(false);
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
@@ -225,8 +225,11 @@ public class GameManager : MonoBehaviour
            // ScrollTools();
 
         // handle all the timers
-        if (state == GameState.Active || state == GameState.RushHour)
-            HandleTimers();
+        if (SceneManager.GetActiveScene().name == "Game")
+        {
+            if (state == GameState.Active || state == GameState.RushHour)
+                HandleTimers();
+        }
     }
 
     private void HandleTimers()
