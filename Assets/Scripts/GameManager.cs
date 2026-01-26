@@ -181,6 +181,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[STATE] Day End");
         Time.timeScale = 0;
         passengerSpawner.StopSpawning();
+        CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
         audioManager.StopLoopSFX();
 
         if (currentScore >= targetScore)

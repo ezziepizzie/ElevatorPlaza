@@ -374,7 +374,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (GameManager.instance.currentTool == ToolType.Sponge)
+        if (GameManager.instance.currentTool == ToolType.Sponge && GameManager.instance.state != GameState.DayWin && GameManager.instance.state != GameState.DayLose)
             GameManager.instance.SwitchToolCursor(ToolType.Hand);
 
         if (isScrubbing)
@@ -428,7 +428,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         elevatorDoorAnim.Update(0f);
 
         elevatorDoorAnim.Play("DoorOpening", 0, 0f);
-        elevatorFloorAnim.Play("floorIdle", 0, 0f);
+        elevatorFloorAnim.Play("FloorIdle", 0, 0f);
     }
 
     public void DisplayScore(int score)
