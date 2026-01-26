@@ -27,3 +27,5 @@ MonoBehaviour:
   isSpecialType: 0
   minPassengersBeforeSpawn: 0
   maxPassengersBeforeSpawn: 0
+  baseScore: 15
+  patiencePenalty: 5
