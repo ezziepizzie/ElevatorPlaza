@@ -150,7 +150,7 @@ public class GameManager : MonoBehaviour
         Debug.Log("[STATE] Active");
         Time.timeScale = 1;
 
-        //GameUI.SetActive(false);
+        GameUI.SetActive(false);
 
         if (SceneManager.GetActiveScene().name == "Game")
         {
