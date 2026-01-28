@@ -31,7 +31,7 @@ public class PassengerSpawner : MonoBehaviour
         foreach (PassengerType type in passengerTypes)
         {
             spawnCounters[type] = type.isSpecialType
-                ? Random.Range(0, type.maxPassengersBeforeSpawn) // 🔑 randomize start
+                ? Random.Range(0, type.maxPassengersBeforeSpawn) // randomize start
                 : 0;
         }
     }

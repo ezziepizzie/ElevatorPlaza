@@ -182,7 +182,7 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         passengerSpawner.StopSpawning();
         CursorController.instance.ChangeCursor(CursorController.instance.defaultCursor);
-        audioManager.StopLoopSFX();
+        audioManager.StopSFX();
 
         if (currentScore >= targetScore)
             UpdateGameState(GameState.DayWin);

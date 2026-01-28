@@ -31,6 +31,7 @@ public class AudioManager : MonoBehaviour
             musicSource.clip = backgroundGame;
         }
 
+        musicSource.loop = true;
         musicSource.Play();
     }
 
@@ -38,19 +39,17 @@ public class AudioManager : MonoBehaviour
     {
         SFXSource.PlayOneShot(clip);
     }
-    public void PlayLoopSFX(AudioClip clip)
+    public void PlayOnce(AudioClip clip)
     {
         if (SFXSource.clip == clip && SFXSource.isPlaying)
             return; 
 
         SFXSource.clip = clip;
-        SFXSource.loop = true;
-        SFXSource.Play();
+        SFXSource.PlayOneShot(clip);
     }
 
-    public void StopLoopSFX()
+    public void StopSFX()
     {
-        SFXSource.loop = false;
         SFXSource.Stop();
     }
 }

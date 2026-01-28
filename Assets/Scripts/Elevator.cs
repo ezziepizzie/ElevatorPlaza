@@ -356,7 +356,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             dirtyMeter.value -= cleanRate * Time.deltaTime;
             dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
 
-            audioManager.PlayLoopSFX(audioManager.elevatorCleaning);
+            audioManager.PlayOnce(audioManager.elevatorCleaning);
         }
 
         if (dirtyMeter.value <= 0f)
@@ -366,7 +366,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
             GameManager.instance.AddCleaningScore(5);
             DisplayScore(5);
-            audioManager.StopLoopSFX();
             audioManager.PlaySFX(audioManager.elevatorCleanDing);
         }
 
@@ -377,11 +376,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         if (GameManager.instance.currentTool == ToolType.Sponge && GameManager.instance.state != GameState.DayWin && GameManager.instance.state != GameState.DayLose)
             GameManager.instance.SwitchToolCursor(ToolType.Hand);
 
-        if (isScrubbing)
-        {
-            isScrubbing = false;
-            audioManager.StopLoopSFX();
-        }
+
+        isScrubbing = false;
+
 
         if (!isBroken)
             return;
