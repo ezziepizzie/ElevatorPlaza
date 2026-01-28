@@ -25,7 +25,7 @@ public class Draggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDra
         passengerSpriteTransform = passengerSprite.GetComponent<RectTransform>();
         passenger = GetComponent<Passenger>();
 
-        passengerSprite.GetComponent<Image>().sprite = passenger.passengerType.passengerSprite;
+        passengerSprite.GetComponent<Image>().sprite = passenger.passengerType.passengerIcon;
         passengerSprite.GetComponent<Image>().raycastTarget = false;
 
         image.color = new Color(1, 1, 1, 0.4f);

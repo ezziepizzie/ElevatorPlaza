@@ -1,14 +1,18 @@
 using TMPro;
 using UnityEngine;
 using System.Linq;
+using UnityEngine.UI;
 
 public class FloorUI : MonoBehaviour
 {
     public TextMeshProUGUI floorText;
-    public TextMeshProUGUI nameText;
-    public void SetText(Passenger passenger)
+    //public TextMeshProUGUI nameText;
+    public Image image;
+
+    public void UpdateUI(Passenger passenger)
     {
-        nameText.text = passenger.passengerType.passengerName;
+        //nameText.text = passenger.passengerType.passengerName;
+        image.sprite = passenger.passengerType.passengerIcon;
 
         if (passenger.targetFloors.Count == 1)
         {

@@ -18,6 +18,7 @@ public class AudioManager : MonoBehaviour
     public AudioClip elevatorFixing;
     public AudioClip elevatorActive;
     public AudioClip passengerDrag;
+    public AudioClip passengerDrop;
 
     private void Start()
     {

@@ -64,10 +64,10 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
 
     public void OnDrop(PointerEventData eventData)
     {
-        ToolType currentTool = GameManager.instance.currentTool;
+        //ToolType currentTool = GameManager.instance.currentTool;
 
-        if (currentTool != ToolType.Hand)
-            return;
+        //if (currentTool != ToolType.Hand)
+        //    return;
 
         GameObject droppedPassenger = eventData.pointerDrag;
         Passenger passenger = droppedPassenger.GetComponent<Passenger>();
@@ -107,7 +107,9 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         passengerList = passengerList.OrderBy(p => p.targetFloors.Min()).ToList();
 
         spawner.RemovePassenger(droppedPassenger);
-        
+
+        audioManager.PlaySFX(audioManager.passengerDrop);
+
         // add score
         //passengerScore = GameManager.instance.CalculatePassengerScore(passenger);
 
@@ -141,7 +143,7 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         foreach (Passenger passenger in passengerList)
         {
             GameObject floorUI = Instantiate(floorTextPrefab, floorListGridParent);
-            floorUI.GetComponent<FloorUI>().SetText(passenger);
+            floorUI.GetComponent<FloorUI>().UpdateUI(passenger);
 
             // uncomment if we wanna hide the kid's target floor
 

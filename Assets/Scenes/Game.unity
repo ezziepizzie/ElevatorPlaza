@@ -2567,6 +2567,7 @@ MonoBehaviour:
   elevatorFixing: {fileID: 8300000, guid: 0eed4c5133e50584ca4414bb92710b6c, type: 3}
   elevatorActive: {fileID: 8300000, guid: d34d62938d8ad024883a07ea18af4892, type: 3}
   passengerDrag: {fileID: 8300000, guid: a777fd5df99a31444bd482001c4444c1, type: 3}
+  passengerDrop: {fileID: 8300000, guid: e633faa11109c184ea7c995d20b00572, type: 3}
 --- !u!1 &1360629578
 GameObject:
   m_ObjectHideFlags: 0
