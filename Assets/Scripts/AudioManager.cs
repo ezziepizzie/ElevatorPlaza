@@ -40,14 +40,15 @@ public class AudioManager : MonoBehaviour
     {
         SFXSource.PlayOneShot(clip);
     }
-    public void PlayOnce(AudioClip clip)
+
+    /*public void PlayOnce(AudioClip clip)
     {
         if (SFXSource.clip == clip && SFXSource.isPlaying)
-            return; 
+            return;
 
         SFXSource.clip = clip;
-        SFXSource.PlayOneShot(clip);
-    }
+        SFXSource.Play();
+    }*/
 
     public void StopSFX()
     {

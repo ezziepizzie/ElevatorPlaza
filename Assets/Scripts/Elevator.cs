@@ -337,8 +337,8 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
         pointerDownPos = eventData.position;
         pointerMoved = false;
 
-        if(isDirty)
-            isScrubbing = true;
+        //if(isDirty)
+            //isScrubbing = true;
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -358,7 +358,12 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             dirtyMeter.value -= cleanRate * Time.deltaTime;
             dirtyMeter.value = Mathf.Clamp01(dirtyMeter.value);
 
-            audioManager.PlayOnce(audioManager.elevatorCleaning);
+            if (!isScrubbing)
+            {
+                isScrubbing = true;
+                audioManager.PlaySFX(audioManager.elevatorCleaning);
+            }
+            //audioManager.PlayOnce(audioManager.elevatorCleaning);
         }
 
         if (dirtyMeter.value <= 0f)
@@ -370,7 +375,6 @@ public class Elevator : MonoBehaviour, IDropHandler, IDragHandler, IPointerDownH
             DisplayScore(5);
             audioManager.PlaySFX(audioManager.elevatorCleanDing);
         }
-
     }
 
     public void OnPointerUp(PointerEventData eventData)
