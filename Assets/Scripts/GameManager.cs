@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class GameManager : MonoBehaviour
     public PassengerSpawner passengerSpawner;
 
     [Header("Day Timer")]
-    public float dayDuration = 120f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
+    public float dayDuration = 60f; // SECONDS. 5 mins is kinda goated, has to be odd, 1 min rush hour
     private float dayTimer;
     private int startHour = 9;
     private int endHour = 17;
@@ -39,6 +40,8 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI scoreText;
     public int currentScore = 0;
     public int targetScore = 100;
+    public Slider scoreSlider;
+    private bool targetScoreReached = false;
 
     [SerializeField] private int baseTargetScore = 100;
     [SerializeField] private int targetScoreIncreasePerDay = 50;
@@ -59,14 +62,17 @@ public class GameManager : MonoBehaviour
     public ToolType currentTool = ToolType.Hand;
 
     [Header("Score UI")]
-    public TextMeshProUGUI lblRequiredScore;
-    public TextMeshProUGUI lblCurrentScore;
     public TextMeshProUGUI scoreLabel;
+    public TextMeshProUGUI scoreReachedLabel;
 
     [Header("Game End UI")]
     public GameObject GameUI;
     public GameObject btnRetry;
     public GameObject btnNextLevel;
+    public GameObject sadFaceImage;
+    public GameObject starImage;
+    public TextMeshProUGUI totalScoreText;
+    public TextMeshProUGUI dayStateText;
 
     private void Awake()
     {
@@ -122,6 +128,7 @@ public class GameManager : MonoBehaviour
         dayTimer = dayDuration;
         rushHourTimer = rushHourDuration;
         rushHourTriggered = false;
+        targetScoreReached = false;
         currentScore = 0;
         currentHour = startHour;
 
@@ -137,6 +144,7 @@ public class GameManager : MonoBehaviour
             UpdateScoreUI();
 
             scoreText.gameObject.SetActive(false);
+            scoreReachedLabel.gameObject.SetActive(false);
             audioManager.PlaySFX(audioManager.elevatorActive);
         }
 
@@ -200,6 +208,15 @@ public class GameManager : MonoBehaviour
         // add ui
         btnNextLevel.SetActive(true);
         btnRetry.SetActive(false);
+
+        starImage.SetActive(true);
+        sadFaceImage.SetActive(false);
+
+        dayStateText.text = "DAY PASSED!";
+
+        totalScoreText.text = currentScore.ToString() + " / " + targetScore.ToString();
+
+        audioManager.PlaySFX(audioManager.gameWin);
     }
 
     private void HandleDayLose()
@@ -209,6 +226,15 @@ public class GameManager : MonoBehaviour
         // add ui
         btnNextLevel.SetActive(false);
         btnRetry.SetActive(true);
+
+        starImage.SetActive(false);
+        sadFaceImage.SetActive(true);
+
+        dayStateText.text = "DAY FAILED.";
+
+        totalScoreText.text = currentScore.ToString() + " / " + targetScore.ToString();
+
+        audioManager.PlaySFX(audioManager.gameFail);
     }
 
     private void HandleCleaning()
@@ -305,6 +331,12 @@ public class GameManager : MonoBehaviour
         currentScore += amount;
         currentScore = Mathf.Max(0, currentScore);
         UpdateScoreUI();
+
+        if (currentScore >= targetScore && targetScoreReached == false)
+        {
+
+            DisplayScoreReach();
+        }
     }
 
     void UpdateScoreUI()
@@ -313,7 +345,10 @@ public class GameManager : MonoBehaviour
         //    lblCurrentScore.text = currentScore.ToString();
 
         if (scoreLabel != null)
-            scoreLabel.text = currentScore.ToString() + " / " + targetScore.ToString();
+            scoreLabel.text = currentScore.ToString(); //+ " / " + targetScore.ToString();
+
+        if (scoreSlider != null)
+            scoreSlider.value = (float)currentScore / (float)targetScore;
 
     }
 
@@ -520,6 +555,14 @@ public class GameManager : MonoBehaviour
         StartCoroutine(ScoreFadeOut());
     }
 
+    public void DisplayScoreReach()
+    {
+        targetScoreReached = true;
+        audioManager.PlaySFX(audioManager.scoreReached);
+
+        StartCoroutine(ScoreReachFadeIn());
+    }
+
     private IEnumerator ScoreFadeOut()
     {
         float duration = 1f;
@@ -551,6 +594,55 @@ public class GameManager : MonoBehaviour
         }
 
         scoreText.gameObject.SetActive(false);
+    }
+
+    private IEnumerator ScoreReachFadeOut()
+    {
+        float duration = 1f;
+        float elapsed = 0f;
+
+        Color baseColor = scoreReachedLabel.color;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(1f, 0f, elapsed / duration);
+
+            scoreReachedLabel.color =
+                new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+
+            yield return null;
+        }
+
+        scoreReachedLabel.gameObject.SetActive(false);
+        //GameObject.Destroy(scoreReachedLabel.gameObject);
+    }
+
+    private IEnumerator ScoreReachFadeIn()
+    {
+        scoreReachedLabel.gameObject.SetActive(true);
+
+        float duration = .5f;
+        float elapsed = 0f;
+
+        Color baseColor = scoreReachedLabel.color;
+
+        scoreReachedLabel.color = new Color(baseColor.r, baseColor.g, baseColor.b, 0f);
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float alpha = Mathf.Lerp(0f, 1f, elapsed / duration);
+
+            scoreReachedLabel.color =
+                new Color(baseColor.r, baseColor.g, baseColor.b, alpha);
+
+            yield return null;
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        StartCoroutine(ScoreReachFadeOut());
     }
 }
 

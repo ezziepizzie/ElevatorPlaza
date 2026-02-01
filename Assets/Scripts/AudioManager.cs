@@ -19,6 +19,9 @@ public class AudioManager : MonoBehaviour
     public AudioClip elevatorActive;
     public AudioClip passengerDrag;
     public AudioClip passengerDrop;
+    public AudioClip scoreReached;
+    public AudioClip gameWin;
+    public AudioClip gameFail;
 
     private void Start()
     {
